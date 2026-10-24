@@ -27,7 +27,10 @@ require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
 -- Screensaver window rules: floating overlay matching screen bounds with background visible
-o.window("org.omarchy.screensaver", { fullscreen = false, float = true, move = { 0, 0 }, animation = "fade" })
+-- Instantaneous transition (no animation) ONLY for screensaver
+o.window("org.omarchy.screensaver", { fullscreen = false, float = true, move = { 0, 0 }, animation = "none" })
+
+
 
 
 

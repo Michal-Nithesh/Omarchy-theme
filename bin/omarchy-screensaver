@@ -15,12 +15,14 @@ exit_screensaver() {
   # Restore cursor visibility
   hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
 
-  # Restore previous workspace
+  # Restore previous workspace with instantaneous transition (disable workspace animation only for this switch)
   if [[ -f "$STATE_DIR/screensaver_prev_ws" ]]; then
     PREV_WS=$(cat "$STATE_DIR/screensaver_prev_ws" 2>/dev/null)
     rm -f "$STATE_DIR/screensaver_prev_ws"
     if [[ -n "$PREV_WS" ]]; then
+      hyprctl eval 'hl.animation({ leaf = "workspaces", enabled = false })' >/dev/null 2>&1
       hyprctl dispatch "hl.dsp.focus({ workspace = \"$PREV_WS\" })" >/dev/null 2>&1 || hyprctl dispatch workspace "$PREV_WS" >/dev/null 2>&1 || true
+      hyprctl eval 'hl.animation({ leaf = "workspaces", enabled = true, speed = 3.2, bezier = "sakuraEase", style = "slide" })' >/dev/null 2>&1
     fi
   fi
 
