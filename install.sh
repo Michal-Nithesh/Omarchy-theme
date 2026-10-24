@@ -218,11 +218,35 @@ for hf in looknfeel.conf hyprlock.conf autostart.conf bindings.conf; do
 done
 
 # ------------------------------------------------------------------------------
-# 6. Deploy Terminal Configuration (Ghostty)
+# 6. Deploy Terminal Configuration (Ghostty & Foot Screensaver)
 # ------------------------------------------------------------------------------
 if [[ -f "${SCRIPT_DIR}/config/ghostty/config" ]]; then
   log_info "Deploying Ghostty terminal styling..."
   copy_safe "${SCRIPT_DIR}/config/ghostty/config" "${HOME}/.config/ghostty/config"
+fi
+
+if [[ -f "${SCRIPT_DIR}/config/omarchy/foot/screensaver.ini" ]]; then
+  log_info "Deploying screensaver terminal styling..."
+  copy_safe "${SCRIPT_DIR}/config/omarchy/foot/screensaver.ini" "${HOME}/.config/omarchy/foot/screensaver.ini"
+fi
+
+# ------------------------------------------------------------------------------
+# 6.1. Deploy Screensaver Assets & Binaries
+# ------------------------------------------------------------------------------
+if [[ -f "${SCRIPT_DIR}/assets/wallpapers/Screensaver.png" ]]; then
+  log_info "Deploying screensaver ambient background asset..."
+  copy_safe "${SCRIPT_DIR}/assets/wallpapers/Screensaver.png" "${HOME}/.config/omarchy/assets/Screensaver.png"
+fi
+
+if [[ -d "${SCRIPT_DIR}/bin" ]]; then
+  log_info "Deploying custom screensaver scripts to ~/.local/bin..."
+  mkdir -p "${HOME}/.local/bin"
+  for bf in "${SCRIPT_DIR}/bin"/*; do
+    if [[ -f "$bf" ]]; then
+      copy_safe "$bf" "${HOME}/.local/bin/$(basename "$bf")"
+      chmod +x "${HOME}/.local/bin/$(basename "$bf")" 2>/dev/null || true
+    fi
+  done
 fi
 
 # ------------------------------------------------------------------------------

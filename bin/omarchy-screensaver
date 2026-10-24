@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# omarchy:summary=Run the Omarchy screensaver with Sakurazuki ambient backdrop
+
+STATE_DIR="$HOME/.local/state/omarchy"
+
+screensaver_in_focus() {
+  hyprctl activewindow -j | jq -e '.class == "org.omarchy.screensaver"' >/dev/null 2>&1
+}
+
+exit_screensaver() {
+  # Avoid recursion
+  trap - EXIT SIGINT SIGTERM SIGHUP SIGQUIT
+
+  # Restore cursor visibility
+  hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
+
+  # Restore top bar
+  rm -f "$STATE_DIR/toggles/bar-off"
+
+  # Restore previous workspace
+  if [[ -f "$STATE_DIR/screensaver_prev_ws" ]]; then
+    PREV_WS=$(cat "$STATE_DIR/screensaver_prev_ws" 2>/dev/null)
+    rm -f "$STATE_DIR/screensaver_prev_ws"
+    if [[ -n "$PREV_WS" ]]; then
+      hyprctl dispatch "hl.dsp.focus({ workspace = \"$PREV_WS\" })" >/dev/null 2>&1 || hyprctl dispatch workspace "$PREV_WS" >/dev/null 2>&1 || true
+    fi
+  fi
+
+  # Restore previous desktop wallpaper
+  if [[ -f "$STATE_DIR/screensaver_prev_bg" ]]; then
+    PREV_BG=$(cat "$STATE_DIR/screensaver_prev_bg" 2>/dev/null)
+    rm -f "$STATE_DIR/screensaver_prev_bg"
+    if [[ -n "$PREV_BG" && -f "$PREV_BG" ]]; then
+      omarchy-shell -q background setInstant "$PREV_BG"
+    fi
+  fi
+
+  # Kill animation and all screensaver instances
+  pkill -x ttfx 2>/dev/null || true
+  pkill -f '[o]rg.omarchy.screensaver' 2>/dev/null || true
+  exit 0
+}
+
+# Trap exit signals and guarantee cleanup on any exit
+trap exit_screensaver EXIT SIGINT SIGTERM SIGHUP SIGQUIT
+
+# Hide cursor
+hyprctl eval 'hl.config({ cursor = { invisible = true } })' &>/dev/null || hyprctl keyword cursor:invisible true &>/dev/null
+
+tty=$(tty 2>/dev/null)
+
+wait_for_terminal_resize() {
+  local deadline=$((SECONDS + 2))
+  while ((SECONDS < deadline)) && [[ $(stty size 2>/dev/null) == "24 80" ]]; do
+    sleep 0.02
+  done
+}
+
+wait_for_terminal_resize
+
+# Record initial cursor position for mouse move detection
+INIT_CURSOR=$(hyprctl cursorpos 2>/dev/null || echo "0, 0")
+INIT_CX=$(echo "$INIT_CURSOR" | cut -d',' -f1 | tr -d ' ')
+INIT_CY=$(echo "$INIT_CURSOR" | cut -d',' -f2 | tr -d ' ')
+
+BRANDING_FILE="$HOME/.config/omarchy/branding/screensaver.txt"
+if [[ ! -f "$BRANDING_FILE" ]]; then
+  BRANDING_FILE="/usr/share/omarchy/branding/screensaver.txt"
+fi
+
+while true; do
+  ttfx -i "$BRANDING_FILE" \
+    --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c\
+    --random-effect --no-eol --no-restore-cursor &
+
+  while pgrep -t "${tty#/dev/}" -x ttfx >/dev/null; do
+    # Check for any keystroke
+    if read -n1 -t 0.1; then
+      exit_screensaver
+    fi
+
+    # Check if window lost focus
+    if ! screensaver_in_focus; then
+      exit_screensaver
+    fi
+
+    # Check for mouse movement exceeding threshold (20px)
+    CURR_CURSOR=$(hyprctl cursorpos 2>/dev/null)
+    if [[ -n "$CURR_CURSOR" ]]; then
+      CURR_CX=$(echo "$CURR_CURSOR" | cut -d',' -f1 | tr -d ' ')
+      CURR_CY=$(echo "$CURR_CURSOR" | cut -d',' -f2 | tr -d ' ')
+      DX=$(( CURR_CX - INIT_CX ))
+      DY=$(( CURR_CY - INIT_CY ))
+      (( DX < 0 )) && DX=$(( -DX ))
+      (( DY < 0 )) && DY=$(( -DY ))
+      if (( DX > 20 || DY > 20 )); then
+        exit_screensaver
+      fi
+    fi
+  done
+done

@@ -86,6 +86,11 @@ else
     log_info "Removed plugin: ${p}"
   done
 
+  # Remove screensaver overrides
+  rm -f "${HOME}/.local/bin/omarchy-launch-screensaver" "${HOME}/.local/bin/omarchy-screensaver"
+  rm -rf "${HOME}/.config/omarchy/foot"
+  rm -f "${HOME}/.config/omarchy/assets/Screensaver.png"
+
   # Revert shell.json if present
   if [[ -f "${HOME}/.config/omarchy/shell.json.bak" ]]; then
     mv "${HOME}/.config/omarchy/shell.json.bak" "${HOME}/.config/omarchy/shell.json"

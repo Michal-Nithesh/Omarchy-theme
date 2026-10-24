@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# omarchy:summary=Launch the Omarchy screensaver with Sakurazuki background overlay
+
+if omarchy-cmd-missing ttfx; then
+  exit 1
+fi
+
+# Exit early if screensaver is already running
+pgrep -f '[o]rg.omarchy.screensaver' && exit 0
+
+# Allow screensaver to be turned off but also force started
+if omarchy-toggle-enabled screensaver-off && [[ $1 != "force" ]]; then
+  exit 1
+fi
+
+STATE_DIR="$HOME/.local/state/omarchy"
+mkdir -p "$STATE_DIR"
+
+# Capture current workspace and background before starting screensaver
+PREV_WS=$(hyprctl activeworkspace -j 2>/dev/null | jq -r '.id' 2>/dev/null || echo "1")
+PREV_BG=$(readlink -f "$STATE_DIR/current/background" 2>/dev/null || true)
+
+# Only save if not already in a screensaver state
+if [[ ! -f "$STATE_DIR/screensaver_prev_ws" ]]; then
+  echo "$PREV_WS" > "$STATE_DIR/screensaver_prev_ws"
+fi
+
+if [[ ! -f "$STATE_DIR/screensaver_prev_bg" ]]; then
+  echo "$PREV_BG" > "$STATE_DIR/screensaver_prev_bg"
+fi
+
+# Locate screensaver background image
+SCREENSAVER_BG="$HOME/.config/omarchy/assets/Screensaver.png"
+if [[ ! -f "$SCREENSAVER_BG" && -f "$HOME/Downloads/Screensaver.png" ]]; then
+  SCREENSAVER_BG="$HOME/Downloads/Screensaver.png"
+fi
+
+# Switch wallpaper immediately to Screensaver.png
+if [[ -f "$SCREENSAVER_BG" ]]; then
+  omarchy-shell -q background setInstant "$SCREENSAVER_BG"
+fi
+
+# Hide top bar during screensaver
+mkdir -p "$STATE_DIR/toggles"
+touch "$STATE_DIR/toggles/bar-off"
+
+# Focus empty workspace 99 so user windows are not touched
+hyprctl dispatch 'hl.dsp.focus({ workspace = "99" })' >/dev/null 2>&1 || hyprctl dispatch workspace 99 >/dev/null 2>&1
+
+# Calculate logical resolution from primary monitor
+LOGICAL_RES=$(hyprctl monitors -j 2>/dev/null | jq -r '.[0] | "\((.width / .scale) | floor)x\((.height / .scale) | floor)"' 2>/dev/null || echo "1536x864")
+
+FOOT_CONFIG="$HOME/.config/omarchy/foot/screensaver.ini"
+if [[ ! -f "$FOOT_CONFIG" ]]; then
+  FOOT_CONFIG="/usr/share/omarchy/default/foot/screensaver.ini"
+fi
+
+hypr_focus_monitor() {
+  hyprctl dispatch "hl.dsp.focus({ monitor = \"$1\" })" >/dev/null 2>&1 || hyprctl dispatch focusmonitor "$1" >/dev/null 2>&1
+}
+
+hypr_exec() {
+  local command
+  printf -v command '%q ' "$@"
+
+  hyprctl dispatch "hl.dsp.exec_cmd([[$command]])" >/dev/null 2>&1 || hyprctl dispatch exec -- bash -lc "$command" >/dev/null 2>&1
+}
+
+SOCKET="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+
+events=""
+SOCAT_PID=""
+if command -v socat >/dev/null 2>&1 && [[ -S "$SOCKET" ]]; then
+  exec {events}< <(socat -U - "UNIX-CONNECT:$SOCKET")
+  SOCAT_PID=$!
+
+  wait_for_screensaver_window() {
+    local line deadline=$((SECONDS + 5))
+    while ((SECONDS < deadline)) && IFS= read -r -t $((deadline - SECONDS)) -u "$events" line; do
+      [[ $line == openwindow\>\>*,org.omarchy.screensaver,* ]] && return 0
+    done
+  }
+else
+  wait_for_screensaver_window() {
+    sleep 0.5
+  }
+fi
+
+focused=$(omarchy-hyprland-monitor-focused 2>/dev/null || hyprctl monitors -j | jq -r '.[] | select(.focused) | .name' 2>/dev/null || echo "eDP-1")
+
+for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
+  hypr_focus_monitor "$m"
+  hypr_exec foot --app-id=org.omarchy.screensaver --config="$FOOT_CONFIG" -w "$LOGICAL_RES" -e "$HOME/.local/bin/omarchy-screensaver"
+  wait_for_screensaver_window
+done
+
+if [[ -n "$events" ]]; then
+  exec {events}<&-
+fi
+if [[ -n "$SOCAT_PID" ]]; then
+  kill "$SOCAT_PID" 2>/dev/null || true
+fi
+
+hypr_focus_monitor "$focused"
