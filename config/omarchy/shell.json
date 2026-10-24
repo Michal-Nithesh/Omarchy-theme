@@ -1,0 +1,48 @@
+{
+  "bar": {
+    "centerAnchor": "michal.center-island",
+    "layout": {
+      "center": [
+        {
+          "id": "michal.center-island"
+        }
+      ],
+      "left": [
+        {
+          "id": "michal.workspaces"
+        }
+      ],
+      "right": [
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "michal.system-island"
+        }
+      ]
+    },
+    "position": "top",
+    "transparent": true
+  },
+  "cloneSourceRestores": [
+    "michal.menu",
+    "michal.lock"
+  ],
+  "disabledPlugins": [
+    "omarchy.menu",
+    "omarchy.lock"
+  ],
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
+  },
+  "plugins": [
+    {
+      "id": "michal.menu"
+    },
+    {
+      "id": "michal.lock"
+    }
+  ],
+  "version": 1
+}

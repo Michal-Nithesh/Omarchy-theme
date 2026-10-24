@@ -1,0 +1,30 @@
+{
+  // Michal × Sakurazuki Extensions for Omarchy Menu
+  "style": {
+    "icon": "",
+    "label": "Appearance"
+  },
+  "style.windows": {
+    "icon": "",
+    "label": "Windows & Gaps",
+    "action": "omarchy-hyprland-window-gaps-toggle"
+  },
+  "style.workspace-layout": {
+    "icon": "󱂬",
+    "label": "Workspace Layout",
+    "action": "omarchy-hyprland-workspace-layout-toggle"
+  },
+  "trigger.clipboard": {
+    "icon": "",
+    "label": "Clipboard",
+    "aliases": ["clipboard"],
+    "action": "omarchy-menu-clipboard"
+  },
+  "about": {
+    "icon": "󰋽",
+    "label": "About",
+    "title": "Michal — Sakurazuki Desktop",
+    "description": "Michal — Sakurazuki Desktop Overview",
+    "action": "omarchy-launch-about"
+  }
+}

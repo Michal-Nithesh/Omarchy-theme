@@ -1,0 +1,12 @@
+[Icon Theme]
+Name=Sakurazuki
+Comment=Sakurazuki Japanese Cherry Blossom / Midnight Plum Icon Theme
+Inherits=WhiteSur-dark,Yaru-magenta-dark,Yaru-magenta,breeze-dark,hicolor
+Directories=places/scalable
+
+[places/scalable]
+Context=Places
+Size=64
+MinSize=16
+MaxSize=512
+Type=Scalable

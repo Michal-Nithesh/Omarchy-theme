@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "michal.center-island",
+  "name": "Sakurazuki Center Island",
+  "version": "1.0.0",
+  "author": "Michal",
+  "description": "Japanese midnight aesthetic center island with clock, date, weather, and Sakura Control launcher",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "CenterIsland.qml"
+  },
+  "barWidget": {
+    "displayName": "Sakurazuki Center Island",
+    "description": "Center island with clock, calendar, weather, and Sakura Control",
+    "category": "Status",
+    "allowMultiple": false
+  }
+}

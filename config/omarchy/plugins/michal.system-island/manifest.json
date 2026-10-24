@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "michal.system-island",
+  "name": "Sakurazuki System Island",
+  "version": "1.0.0",
+  "author": "Michal",
+  "description": "Unified Sakurazuki System Island with Bluetooth, Wi-Fi, Audio, Display, and Battery status & popovers",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "SystemIsland.qml"
+  },
+  "barWidget": {
+    "displayName": "Sakurazuki System Island",
+    "description": "Unified system controls island",
+    "category": "System",
+    "allowMultiple": false
+  }
+}
