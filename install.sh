@@ -148,7 +148,7 @@ log_info "Deploying Quickshell plugins..."
 PLUGINS_SRC="${SCRIPT_DIR}/config/omarchy/plugins"
 PLUGINS_DST="${HOME}/.config/omarchy/plugins"
 
-for plugin in michal.workspaces michal.center-island michal.system-island michal.menu michal.lock; do
+for plugin in michal.workspaces michal.center-island michal.system-island michal.menu michal.lock michal.bar; do
   if [[ -d "${PLUGINS_SRC}/${plugin}" ]]; then
     copy_safe "${PLUGINS_SRC}/${plugin}" "${PLUGINS_DST}/${plugin}"
   fi

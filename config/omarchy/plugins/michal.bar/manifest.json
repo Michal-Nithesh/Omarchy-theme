@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "michal.bar",
+  "name": "Michal Fixed Bar",
+  "version": "1.0.0",
+  "author": "Michal",
+  "description": "Fixed status bar with locked panels",
+  "kinds": [
+    "bar"
+  ],
+  "entryPoints": {
+    "bar": "Bar.qml"
+  }
+}

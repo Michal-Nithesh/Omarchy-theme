@@ -1,5 +1,6 @@
 {
   "bar": {
+    "id": "michal.bar",
     "centerAnchor": "michal.center-island",
     "layout": {
       "center": [
@@ -26,11 +27,13 @@
   },
   "cloneSourceRestores": [
     "michal.menu",
-    "michal.lock"
+    "michal.lock",
+    "michal.bar"
   ],
   "disabledPlugins": [
     "omarchy.menu",
-    "omarchy.lock"
+    "omarchy.lock",
+    "omarchy.bar"
   ],
   "idle": {
     "lock": 300,
@@ -42,6 +45,9 @@
     },
     {
       "id": "michal.lock"
+    },
+    {
+      "id": "michal.bar"
     }
   ],
   "version": 1

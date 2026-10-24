@@ -81,7 +81,7 @@ else
   log_warn "No pre-install backup directory found. Removing Sakurazuki files manually..."
 
   # Remove custom plugins
-  for p in michal.workspaces michal.center-island michal.system-island michal.menu michal.lock; do
+  for p in michal.workspaces michal.center-island michal.system-island michal.menu michal.lock michal.bar; do
     rm -rf "${HOME}/.config/omarchy/plugins/${p}"
     log_info "Removed plugin: ${p}"
   done
