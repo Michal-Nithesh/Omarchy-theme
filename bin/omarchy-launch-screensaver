@@ -41,10 +41,6 @@ if [[ -f "$SCREENSAVER_BG" ]]; then
   omarchy-shell -q background setInstant "$SCREENSAVER_BG"
 fi
 
-# Hide top bar during screensaver
-mkdir -p "$STATE_DIR/toggles"
-touch "$STATE_DIR/toggles/bar-off"
-
 # Focus empty workspace 99 so user windows are not touched
 hyprctl dispatch 'hl.dsp.focus({ workspace = "99" })' >/dev/null 2>&1 || hyprctl dispatch workspace 99 >/dev/null 2>&1
 
