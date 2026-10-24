@@ -15,9 +15,6 @@ exit_screensaver() {
   # Restore cursor visibility
   hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
 
-  # Restore mouse tracking
-  printf '\033[?1000l\033[?1006l'
-
   # Restore previous workspace
   if [[ -f "$STATE_DIR/screensaver_prev_ws" ]]; then
     PREV_WS=$(cat "$STATE_DIR/screensaver_prev_ws" 2>/dev/null)
@@ -58,14 +55,6 @@ wait_for_terminal_resize() {
 }
 
 wait_for_terminal_resize
-
-# Enable mouse click tracking so clicking anywhere dismisses screensaver
-printf '\033[?1000h\033[?1006h'
-
-# Record initial cursor position for mouse move detection
-INIT_CURSOR=$(hyprctl cursorpos 2>/dev/null || echo "0, 0")
-INIT_CX=$(echo "$INIT_CURSOR" | cut -d',' -f1 | tr -d ' ')
-INIT_CY=$(echo "$INIT_CURSOR" | cut -d',' -f2 | tr -d ' ')
 
 BRANDING_FILE="$HOME/.config/omarchy/branding/screensaver.txt"
 if [[ ! -f "$BRANDING_FILE" ]]; then
@@ -118,28 +107,16 @@ while true; do
   esac
 
   while pgrep -t "${tty#/dev/}" -x ttfx >/dev/null; do
-    # Check for any keystroke
-    if read -n1 -t 0.1; then
-      exit_screensaver
+    # Only dismiss when Enter is pressed
+    if IFS= read -r -s -d '' -n 1 -t 0.1 char; then
+      if [[ "$char" == $'\n' || "$char" == $'\r' ]]; then
+        exit_screensaver
+      fi
     fi
 
     # Check if window lost focus
     if ! screensaver_in_focus; then
       exit_screensaver
-    fi
-
-    # Check for mouse movement exceeding threshold (20px)
-    CURR_CURSOR=$(hyprctl cursorpos 2>/dev/null)
-    if [[ -n "$CURR_CURSOR" ]]; then
-      CURR_CX=$(echo "$CURR_CURSOR" | cut -d',' -f1 | tr -d ' ')
-      CURR_CY=$(echo "$CURR_CURSOR" | cut -d',' -f2 | tr -d ' ')
-      DX=$(( CURR_CX - INIT_CX ))
-      DY=$(( CURR_CY - INIT_CY ))
-      (( DX < 0 )) && DX=$(( -DX ))
-      (( DY < 0 )) && DY=$(( -DY ))
-      if (( DX > 20 || DY > 20 )); then
-        exit_screensaver
-      fi
     fi
   done
 done
