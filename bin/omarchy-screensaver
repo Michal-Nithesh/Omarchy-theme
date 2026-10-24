@@ -44,8 +44,8 @@ exit_screensaver() {
 # Trap exit signals and guarantee cleanup on any exit
 trap exit_screensaver EXIT SIGINT SIGTERM SIGHUP SIGQUIT
 
-# Hide cursor
-hyprctl eval 'hl.config({ cursor = { invisible = true } })' &>/dev/null || hyprctl keyword cursor:invisible true &>/dev/null
+# Ensure cursor visibility is normal
+hyprctl eval 'hl.config({ cursor = { invisible = false } })' &>/dev/null || hyprctl keyword cursor:invisible false &>/dev/null || true
 
 tty=$(tty 2>/dev/null)
 
