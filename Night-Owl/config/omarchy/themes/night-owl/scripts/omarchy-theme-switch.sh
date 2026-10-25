@@ -34,6 +34,13 @@ case "$THEME_NORMALIZED" in
     if command -v gsettings &>/dev/null && [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
       gsettings set org.gnome.desktop.interface icon-theme "Yaru-blue-dark" 2>/dev/null || true
     fi
+
+    # 4. Restart shell to reload the workspace widget
+    if command -v omarchy-restart-shell &>/dev/null; then
+      ( omarchy-restart-shell &>/dev/null & )
+    elif [[ -x "/usr/share/omarchy/bin/omarchy-restart-shell" ]]; then
+      ( /usr/share/omarchy/bin/omarchy-restart-shell &>/dev/null & )
+    fi
     ;;
 
   "sakurazuki")
@@ -53,6 +60,13 @@ case "$THEME_NORMALIZED" in
     # 3. Restore GNOME icon theme to Sakurazuki
     if command -v gsettings &>/dev/null && [[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
       gsettings set org.gnome.desktop.interface icon-theme "Sakurazuki" 2>/dev/null || true
+    fi
+
+    # 4. Restart shell to reload the workspace widget
+    if command -v omarchy-restart-shell &>/dev/null; then
+      ( omarchy-restart-shell &>/dev/null & )
+    elif [[ -x "/usr/share/omarchy/bin/omarchy-restart-shell" ]]; then
+      ( /usr/share/omarchy/bin/omarchy-restart-shell &>/dev/null & )
     fi
     ;;
 esac
