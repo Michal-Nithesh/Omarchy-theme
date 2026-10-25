@@ -79,7 +79,16 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-BACKUP_DIR="${HOME}/.config/omarchy/backups/sakurazuki_pre_install_${TIMESTAMP}"
+
+# Preserve the original pre-install backup if already present
+EXISTING_PRE_INSTALL="$(find "${HOME}/.config/omarchy/backups" -maxdepth 1 -type d -name "sakurazuki_pre_install_*" 2>/dev/null | sort | head -n 1 || true)"
+if [[ -n "$EXISTING_PRE_INSTALL" && -d "$EXISTING_PRE_INSTALL" ]]; then
+  log_info "Existing pre-install backup found: $(basename "$EXISTING_PRE_INSTALL")"
+  log_info "Preserving initial setup backup. This run's backup will be saved as sakurazuki_reinstall_${TIMESTAMP}."
+  BACKUP_DIR="${HOME}/.config/omarchy/backups/sakurazuki_reinstall_${TIMESTAMP}"
+else
+  BACKUP_DIR="${HOME}/.config/omarchy/backups/sakurazuki_pre_install_${TIMESTAMP}"
+fi
 
 # ------------------------------------------------------------------------------
 # Banner
@@ -118,6 +127,11 @@ fi
 backup_item() {
   local target="$1"
   if [[ -e "$target" && "$NO_BACKUP" == false ]]; then
+    # Do not back up Sakurazuki's own custom theme or plugins directory during install
+    if [[ "$target" == "${HOME}/.config/omarchy/themes/sakurazuki"* ]] || \
+       [[ "$target" == "${HOME}/.config/omarchy/plugins/michal."* ]]; then
+      return 0
+    fi
     local rel_path="${target#"$HOME"/}"
     local backup_target="${BACKUP_DIR}/${rel_path}"
     mkdir -p "$(dirname "$backup_target")"

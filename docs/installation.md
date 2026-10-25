@@ -108,4 +108,4 @@ To revert Sakurazuki and restore pre-existing configuration:
 ./uninstall.sh
 ```
 
-The script automatically detects the latest timestamped backup created during installation and restores your original files.
+The script automatically detects the pre-install backup created during initial installation, removes Sakurazuki-added components (custom plugins, theme directory, assets, icons, and screensaver scripts), and restores your original setup using `cp -a`. If multiple backups exist from previous re-installations, it intelligently selects and recommends the original pre-install backup.
