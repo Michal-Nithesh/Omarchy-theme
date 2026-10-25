@@ -181,9 +181,9 @@ Item {
   }
 
   // Dimensions
-  property int cardWidth: root.dmenuActive ? Style.space(root.dmenuWidth) : Math.min(Style.space(840), panel.width - Style.gapsOut * 2)
+  property int cardWidth: root.dmenuActive ? Math.min(Math.max(500, Style.space(root.dmenuWidth)), panel.width - Style.gapsOut * 2) : Math.min(Style.space(840), panel.width - Style.gapsOut * 2)
   property int cardHeight: root.dmenuActive
-    ? Math.min(Style.spacing.panelPadding * 2 + 50 + visibleRowsHeight, panel.height - Style.gapsOut * 2)
+    ? Math.min(130 + visibleRowsHeight, panel.height - Style.gapsOut * 2)
     : Math.min(Style.space(560), panel.height - Style.gapsOut * 2)
   property int layoutSerial: 0
   property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, false)
@@ -255,9 +255,11 @@ Item {
   }
 
   function dmenuRowListHeight(_serial, _count, _filter) {
+    if (root.mode === "input") return 0
     var count = displayModel.count
-    var rowsH = Math.min(count * 46, Style.space(380))
-    return Math.max(46, rowsH)
+    if (count === 0) return 60
+    var rowsH = Math.min(count * 52, Style.space(380))
+    return Math.max(52, rowsH)
   }
 
   function item(id) {
@@ -543,20 +545,23 @@ Item {
     displayModel.clear()
     var query = root.filterText.trim().toLowerCase()
     for (var i = 0; i < root.dmenuOptions.length; i++) {
-      var opt = String(root.dmenuOptions[i] || "")
-      if (query && opt.toLowerCase().indexOf(query) < 0) continue
+      var parts = String(root.dmenuOptions[i] || "").split("\t")
+      var icon = parts.length > 1 ? parts.shift() : "󰐱"
+      var label = parts.shift() || ""
+      var detail = parts.join("\t")
+      if (query && label.toLowerCase().indexOf(query) < 0 && detail.toLowerCase().indexOf(query) < 0) continue
       displayModel.append({
         itemId: "dmenu." + i,
         kind: "dmenu",
-        icon: "",
+        icon: icon || "󰐱",
         iconFont: root.fontFamily,
         appIcon: "",
         appId: "",
-        label: opt,
-        title: opt,
+        label: label,
+        title: label,
         target: "",
-        detail: "",
-        path: opt,
+        detail: detail,
+        path: "",
         action: "",
         childCount: 0,
         score: i,
@@ -716,7 +721,11 @@ Item {
 
   function revealCursor() {
     if (displayModel.count === 0) return
-    resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
+    if (root.dmenuActive) {
+      if (typeof dmenuList !== "undefined" && dmenuList) dmenuList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
+    } else {
+      if (typeof resultList !== "undefined" && resultList) resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
+    }
   }
 
   function select(delta) {
@@ -733,8 +742,8 @@ Item {
     if (root.filterText === nextFilter) return
     root.filterText = nextFilter
     root.selectedIndex = 0
-    root.cursorActive = false
-    if (nextFilter) root.loadProvidersForSearch()
+    root.cursorActive = root.dmenuActive ? true : false
+    if (nextFilter && !root.dmenuActive) root.loadProvidersForSearch()
     root.rebuildDisplay()
   }
 
@@ -763,8 +772,14 @@ Item {
 
   function activateIndex(index) {
     if (root.dmenuActive) {
-      if (root.mode === "input") root.applyDmenuSelection(root.filterText)
-      else if (displayModel.count > index && index >= 0) root.applyDmenuSelection(displayModel.get(index).label)
+      if (root.mode === "input") {
+        root.applyDmenuSelection(root.filterText)
+        return
+      }
+      if (displayModel.count > index && index >= 0) {
+        var picked = displayModel.get(index)
+        root.applyDmenuSelection(picked.detail ? picked.label + "\t" + picked.detail : picked.label)
+      }
       return
     }
 
@@ -820,12 +835,15 @@ Item {
   }
 
   function applyDmenuSelection(value) {
+    root.opened = false
+    root.filterText = ""
     root.finishRequest(value)
   }
 
   function cancel() {
+    if (root.dmenuActive) root.finishRequest(null)
     root.opened = false
-    root.finishRequest(null)
+    root.filterText = ""
   }
 
   function openExistingMenu(initialMenu) {
@@ -861,11 +879,11 @@ Item {
     root.dmenuOptions = payload.options || []
     root.selectionFile = payload.selectionFile || ""
     root.doneFile = payload.doneFile || ""
-    root.dmenuWidth = payload.width || 320
+    root.dmenuWidth = payload.width || 480
     root.requestActive = true
     root.filterText = ""
     root.selectedIndex = 0
-    root.cursorActive = false
+    root.cursorActive = true
     root.opened = true
     root.rebuildDmenuDisplay()
     Qt.callLater(function() { keyCatcher.forceActiveFocus() })
@@ -1115,7 +1133,7 @@ Item {
           } else if (event.key === Qt.Key_PageDown) {
             root.select(6)
             event.accepted = true
-          } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Right) {
+          } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             if (root.dmenuActive) {
               if (root.mode === "input") root.applyDmenuSelection(root.filterText)
               else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
@@ -1123,6 +1141,11 @@ Item {
               root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
             }
             event.accepted = true
+          } else if (event.key === Qt.Key_Right) {
+            if (!root.dmenuActive && displayModel.count > 0) {
+              root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
+              event.accepted = true
+            }
           } else if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32 && event.text.charCodeAt(0) !== 127 && (event.modifiers === Qt.NoModifier || event.modifiers === Qt.ShiftModifier)) {
             root.setFilter(root.filterText + event.text)
             event.accepted = true
@@ -1147,8 +1170,349 @@ Item {
           onConfirmed: root.confirmDelete()
         }
 
-        // Complete Redesigned Hub Layout
+        // =========================================================
+        // 1. Dmenu / Select Dialog View (active when dmenuActive)
+        // =========================================================
         Column {
+          id: dmenuContainer
+          visible: root.dmenuActive
+          anchors.fill: parent
+          anchors.margins: 14
+          spacing: 10
+
+          // Dialog Header Bar
+          Item {
+            width: parent.width
+            height: 40
+
+            // Left: Icon + Prompt Label
+            Row {
+              anchors.left: parent.left
+              anchors.verticalCenter: parent.verticalCenter
+              spacing: 10
+
+              Rectangle {
+                width: 32
+                height: 32
+                radius: 8
+                color: root.secondaryBg
+                border.color: root.sakuraRose
+                border.width: 1
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                  anchors.centerIn: parent
+                  text: root.mode === "input" ? "󰌌" : "󰐱"
+                  color: root.blossomPink
+                  font.family: root.fontFamily
+                  font.pixelSize: 16
+                }
+              }
+
+              Text {
+                text: root.dmenuPrompt ? root.dmenuPrompt : (root.mode === "input" ? "Input" : "Select Option")
+                color: root.primaryText
+                font.family: root.fontFamily
+                font.pixelSize: 15
+                font.weight: Font.Bold
+                anchors.verticalCenter: parent.verticalCenter
+              }
+            }
+
+            // Right: Integrated Search Filter Field
+            Rectangle {
+              id: dmenuSearchField
+              width: 210
+              height: 34
+              radius: 8
+              color: root.secondaryBg
+              border.color: root.filterText ? root.sakuraRose : root.borderCol
+              border.width: 1
+              anchors.right: parent.right
+              anchors.verticalCenter: parent.verticalCenter
+
+              MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.IBeamCursor
+                onClicked: keyCatcher.forceActiveFocus()
+              }
+
+              Text {
+                id: dmenuSearchIcon
+                text: "󰍉"
+                color: root.filterText ? root.blossomPink : root.mutedText
+                font.family: root.fontFamily
+                font.pixelSize: 14
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.verticalCenter: parent.verticalCenter
+              }
+
+              Row {
+                anchors.left: dmenuSearchIcon.right
+                anchors.leftMargin: 8
+                anchors.right: dmenuClearBtn.visible ? dmenuClearBtn.left : parent.right
+                anchors.rightMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                clip: true
+
+                Text {
+                  textFormat: Text.PlainText
+                  text: root.filterText ? root.filterText : "Type to filter…"
+                  color: root.filterText ? root.primaryText : root.mutedText
+                  font.family: root.fontFamily
+                  font.pixelSize: 12
+                  anchors.verticalCenter: parent.verticalCenter
+                  elide: Text.ElideRight
+                }
+
+                Text {
+                  text: "|"
+                  visible: root.cursorBlink
+                  color: root.blossomPink
+                  font.family: root.fontFamily
+                  font.pixelSize: 13
+                  anchors.verticalCenter: parent.verticalCenter
+                }
+              }
+
+              Rectangle {
+                id: dmenuClearBtn
+                visible: root.filterText.length > 0
+                width: 18
+                height: 18
+                radius: 9
+                color: dmenuClearMouse.containsMouse ? root.elevatedSurface : "transparent"
+                anchors.right: parent.right
+                anchors.rightMargin: 6
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                  anchors.centerIn: parent
+                  text: "󰅖"
+                  color: dmenuClearMouse.containsMouse ? root.primaryText : root.mutedText
+                  font.family: root.fontFamily
+                  font.pixelSize: 10
+                }
+
+                MouseArea {
+                  id: dmenuClearMouse
+                  anchors.fill: parent
+                  hoverEnabled: true
+                  cursorShape: Qt.PointingHandCursor
+                  onClicked: root.setFilter("")
+                }
+              }
+            }
+          }
+
+          // Separator Line
+          Rectangle {
+            width: parent.width
+            height: 1
+            color: root.borderCol
+          }
+
+          // Main Options List
+          Item {
+            width: parent.width
+            height: root.visibleRowsHeight
+            clip: true
+
+            ListView {
+              id: dmenuList
+              anchors.fill: parent
+              model: displayModel
+              spacing: 4
+              boundsBehavior: Flickable.StopAtBounds
+              clip: true
+
+              delegate: Rectangle {
+                id: dmenuRow
+                required property int index
+                required property string icon
+                required property string label
+                required property string detail
+
+                readonly property bool hasCursor: root.cursorActive && dmenuRow.index === root.selectedIndex
+
+                width: ListView.view.width
+                height: dmenuRow.detail.length > 0 ? 50 : 42
+                radius: 8
+                color: hasCursor ? root.selectedBackground : "transparent"
+                border.color: hasCursor ? root.selectedBorder : "transparent"
+                border.width: hasCursor ? 1 : 0
+
+                // Blossom Pink Left Accent Bar
+                Rectangle {
+                  visible: dmenuRow.hasCursor
+                  width: 3
+                  height: parent.height - 12
+                  radius: 1.5
+                  color: root.blossomPink
+                  anchors.left: parent.left
+                  anchors.leftMargin: 4
+                  anchors.verticalCenter: parent.verticalCenter
+                }
+
+                // Left Icon
+                Text {
+                  id: dmenuIconText
+                  textFormat: Text.PlainText
+                  text: dmenuRow.icon || "󰐱"
+                  color: dmenuRow.hasCursor ? root.blossomPink : root.primaryText
+                  font.family: root.fontFamily
+                  font.pixelSize: 18
+                  width: 28
+                  horizontalAlignment: Text.AlignHCenter
+                  verticalAlignment: Text.AlignVCenter
+                  anchors.left: parent.left
+                  anchors.leftMargin: 12
+                  anchors.verticalCenter: parent.verticalCenter
+                }
+
+                // Label and Detail
+                Column {
+                  anchors.left: dmenuIconText.right
+                  anchors.leftMargin: 12
+                  anchors.right: dmenuSelectBadge.left
+                  anchors.rightMargin: 10
+                  anchors.verticalCenter: parent.verticalCenter
+                  spacing: 2
+
+                  Text {
+                    textFormat: Text.PlainText
+                    width: parent.width
+                    text: dmenuRow.label
+                    color: dmenuRow.hasCursor ? root.primaryText : root.secondaryText
+                    font.family: root.fontFamily
+                    font.pixelSize: 13
+                    font.weight: dmenuRow.hasCursor ? Font.DemiBold : Font.Normal
+                    elide: Text.ElideRight
+                  }
+
+                  Text {
+                    textFormat: Text.PlainText
+                    width: parent.width
+                    text: dmenuRow.detail
+                    visible: dmenuRow.detail.length > 0
+                    color: dmenuRow.hasCursor ? root.blossomPink : root.mutedText
+                    font.family: root.fontFamily
+                    font.pixelSize: 11
+                    elide: Text.ElideRight
+                  }
+                }
+
+                // Action Badge on Selection
+                Rectangle {
+                  id: dmenuSelectBadge
+                  visible: dmenuRow.hasCursor
+                  height: 22
+                  width: dmenuBadgeText.implicitWidth + 12
+                  radius: 5
+                  color: root.secondaryBg
+                  border.color: root.sakuraRose
+                  border.width: 1
+                  anchors.right: parent.right
+                  anchors.rightMargin: 12
+                  anchors.verticalCenter: parent.verticalCenter
+
+                  Text {
+                    id: dmenuBadgeText
+                    anchors.centerIn: parent
+                    text: "↵ Select"
+                    color: root.blossomPink
+                    font.family: root.fontFamily
+                    font.pixelSize: 11
+                    font.weight: Font.Medium
+                  }
+                }
+
+                MouseArea {
+                  anchors.fill: parent
+                  hoverEnabled: true
+                  cursorShape: Qt.PointingHandCursor
+                  onEntered: root.selectFromPointer(dmenuRow.index)
+                  onClicked: root.activateIndex(dmenuRow.index)
+                }
+              }
+            }
+
+            // Empty State
+            Item {
+              anchors.fill: parent
+              visible: displayModel.count === 0
+
+              Column {
+                anchors.centerIn: parent
+                spacing: 6
+
+                Text {
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: "󰍉"
+                  color: root.mutedText
+                  font.family: root.fontFamily
+                  font.pixelSize: 24
+                }
+
+                Text {
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  text: root.filterText ? "No matching options" : "No items available"
+                  color: root.mutedText
+                  font.family: root.fontFamily
+                  font.pixelSize: 12
+                }
+              }
+            }
+          }
+
+          // Footer Separator Line
+          Rectangle {
+            width: parent.width
+            height: 1
+            color: root.borderCol
+          }
+
+          // Footer Hints
+          Item {
+            width: parent.width
+            height: 20
+
+            Row {
+              anchors.centerIn: parent
+              spacing: 14
+
+              Row {
+                spacing: 4
+                Text { text: "↑↓"; color: root.sakuraRose; font.family: root.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
+                Text { text: "Navigate"; color: root.mutedText; font.family: root.fontFamily; font.pixelSize: 11 }
+              }
+
+              Text { text: "•"; color: root.borderCol; font.pixelSize: 10 }
+
+              Row {
+                spacing: 4
+                Text { text: "↵"; color: root.blossomPink; font.family: root.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
+                Text { text: "Select"; color: root.mutedText; font.family: root.fontFamily; font.pixelSize: 11 }
+              }
+
+              Text { text: "•"; color: root.borderCol; font.pixelSize: 10 }
+
+              Row {
+                spacing: 4
+                Text { text: "Esc"; color: root.sakuraRose; font.family: root.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
+                Text { text: "Cancel"; color: root.mutedText; font.family: root.fontFamily; font.pixelSize: 11 }
+              }
+            }
+          }
+        }
+
+        // =========================================================
+        // 2. Hub / Main Menu View (active when !dmenuActive)
+        // =========================================================
+        Column {
+          id: hubContainer
+          visible: !root.dmenuActive
           anchors.fill: parent
           spacing: 0
 
