@@ -1,179 +1,128 @@
-<div align="center">
+# Omarchy Desktop Theme Collection
 
-# 🌸 Michal × Sakurazuki 桜月
+```text
+   ____                             _             
+  / __ \____ ___  ____ ___________ / /_  __  __   
+ / / / / __ `__ \/ __ `/ ___/ ___// __ \/ / / /   
+/ /_/ / / / / / / /_/ / /  / /__ / / / / /_/ /    
+\____/_/ /_/ /_/\__,_/_/   \___//_/ /_/\__, /     
+                                      /____/      
+          Multi-Theme Desktop Distributions
+```
 
-### A Modern Japanese Cherry Blossom Desktop for Omarchy Linux & Hyprland
-
-[![OS: Omarchy Linux](https://img.shields.io/badge/OS-Omarchy%20Linux-947598?style=for-the-badge&logo=arch-linux&logoColor=white)](https://omarchy.org/)
-[![Compositor: Hyprland](https://img.shields.io/badge/WM-Hyprland%20Wayland-A87692?style=for-the-badge&logo=wayland&logoColor=white)](https://hyprland.org/)
-[![UI: Quickshell](https://img.shields.io/badge/UI-Quickshell%20QML-C2AEDF?style=for-the-badge&logo=qt&logoColor=white)](https://quickshell.outfoxxed.me/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-D9A6C4?style=for-the-badge)](LICENSE)
-
-<br/>
-
-![Desktop Overview](screenshots/desktop/desktop-overview.png)
-
-</div>
+A curated suite of desktop themes designed for **Omarchy Linux**, **Arch Linux**, and **Hyprland**, offering deep visual harmony, bespoke Quickshell widget integrations, and seamless instant theme switching.
 
 ---
 
-## ⛩️ Overview & Design Philosophy
+## 🌟 The Themes
 
-**Sakurazuki** (桜月 — *Cherry Blossom Moon*) is a personalized, minimalist desktop customization crafted for **Omarchy Linux** and **Hyprland**. 
+```carousel
+![Night Owl Preview](file:///home/michal/Projects/Omarchy/Night-Owl/assets/preview/preview.png)
+<!-- slide -->
+![Sakurazuki Preview](file:///home/michal/Projects/Omarchy/Sakurazuki/screenshots/desktop/desktop-overview.png)
+```
 
-Inspired by peaceful Japanese spring nights, Sakurazuki fuses a rich midnight plum base with sakura blossom pink accents and moonlight lavender highlights. Every component—from the custom Kanji workspace numbers and dynamic status islands down to the 10-category main menu and high-contrast lock screen—has been tailored for seamless everyday usability, fluid performance, and aesthetic elegance.
-
----
-
-## 🎨 Color Palette
-
-| Color Swatch | Name | Hex Code | Role & Usage |
-|:---:|:---|:---:|:---|
-| <img src="https://via.placeholder.com/20/14111A/14111A.png" width="20" height="20" /> | **Midnight Plum** | `#14111A` | Base desktop background, main window surfaces |
-| <img src="https://via.placeholder.com/20/211925/211925.png" width="20" height="20" /> | **Deep Plum** | `#211925` | Card backgrounds, elevated surfaces, sidebars |
-| <img src="https://via.placeholder.com/20/2A1B2A/2A1B2A.png" width="20" height="20" /> | **Frosted Plum** | `#2A1B2A` | Popovers, dropdown menus, modal backdrops |
-| <img src="https://via.placeholder.com/20/A87692/A87692.png" width="20" height="20" /> | **Sakura Rose** | `#A87692` | Active borders, focused tags, primary interactive accents |
-| <img src="https://via.placeholder.com/20/D9A6C4/D9A6C4.png" width="20" height="20" /> | **Blossom Pink** | `#D9A6C4` | Highlight text, gradient stops, badge indicators |
-| <img src="https://via.placeholder.com/20/C2AEDF/C2AEDF.png" width="20" height="20" /> | **Moonlight Lavender** | `#C2AEDF` | Clock digits, secondary icons, subtle highlights |
-| <img src="https://via.placeholder.com/20/F0DCEB/F0DCEB.png" width="20" height="20" /> | **Sakura White** | `#F0DCEB` | High-contrast readable body text |
-| <img src="https://via.placeholder.com/20/B8A3BB/B8A3BB.png" width="20" height="20" /> | **Secondary Text** | `#B8A3BB` | Subtitles, labels, descriptions |
-| <img src="https://via.placeholder.com/20/88758F/88758F.png" width="20" height="20" /> | **Muted Lavender** | `#88758F` | Placeholders, inactive items, timestamps |
-| <img src="https://via.placeholder.com/20/443043/443043.png" width="20" height="20" /> | **Plum Border** | `#443043` | Fine container borders, dividers |
-
----
-
-## 📸 Visual Showcase
-
-### Top Bar & Interactive Islands
-
-![Top Bar Detail](screenshots/islands/top-bar-full.png)
-
-<div align="center">
-
-| Kanji Workspaces (`一 二 三 四 五 六`) | Center Island (Time & Weather) | System Island (Metrics) |
-|:---:|:---:|:---:|
-| ![Workspaces](screenshots/islands/workspaces-kanji.png) | ![Center Island](screenshots/islands/center-island.png) | ![System Island](screenshots/islands/system-island.png) |
-
-| Expanded Calendar Popover | Media & System Controls | Central Quick Power Modal |
-|:---:|:---:|:---:|
-| ![Calendar](screenshots/islands/center-island-calendar.png) | ![Controls](screenshots/islands/center-island-controls.png) | ![Power Modal](screenshots/islands/power-modal.png) |
-
-</div>
-
----
-
-### Main Menu (10 Categories)
-
-The unified **Michal × Sakurazuki Menu** provides fast, responsive keyboard- and mouse-friendly navigation across 10 functional domains:
-
-<div align="center">
-
-| 01. Apps | 02. Learn |
-|:---:|:---:|
-| ![Apps](screenshots/menu/01-apps.png) | ![Learn](screenshots/menu/02-learn.png) |
-
-| 03. Appearance | 04. Trigger |
-|:---:|:---:|
-| ![Appearance](screenshots/menu/03-appearance.png) | ![Trigger](screenshots/menu/04-trigger.png) |
-
-| 05. Setup | 06. Install |
-|:---:|:---:|
-| ![Setup](screenshots/menu/05-setup.png) | ![Install](screenshots/menu/06-install.png) |
-
-| 07. Remove | 08. Update |
-|:---:|:---:|
-| ![Remove](screenshots/menu/07-remove.png) | ![Update](screenshots/menu/08-update.png) |
-
-| 09. System | 10. About (Specs & Overview) |
-|:---:|:---:|
-| ![System](screenshots/menu/09-system.png) | ![About](screenshots/menu/10-about.png) |
-
-</div>
-
----
-
-### Applications & Lock Screen
-
-<div align="center">
-
-| Ghostty Terminal (`fastfetch`) | Nautilus File Manager (GTK Theme) | Sakurazuki Lock Screen |
-|:---:|:---:|:---:|
-| ![Ghostty](screenshots/apps/ghostty-terminal.png) | ![Nautilus](screenshots/apps/nautilus-file-manager.png) | ![Lock Screen](screenshots/lock/lock-screen.png) |
-
-</div>
-
----
-
-## 🧩 Component Architecture
-
-Sakurazuki is built modularly on top of Omarchy Linux and Quickshell:
-
-- **`michal.workspaces`:** Top-left bar widget featuring Japanese Kanji numeral badges (`一` through `六`) and an interactive cherry blossom launcher button (`🌸`).
-- **`michal.center-island`:** Centered digital clock, live local weather indicator, and popovers for a full monthly calendar and media playback controls.
-- **`michal.system-island`:** Top-right cluster displaying Bluetooth, Wi-Fi, Audio volume, Display brightness, and Battery status. Features an expandable 5-tab settings popover and a centered 4-button Power modal.
-- **`michal.menu`:** Re-engineered Omarchy menu with dynamic application discovery, categorized actions, fuzzy search, and a personal branding overview.
-- **`michal.lock`:** Modern session lock screen with high-contrast typography, PAM password authentication, and custom circular avatar framing.
-- **Hyprland Look & Feel:** 14px window corner rounding, 45-degree dual gradient sakura borders, frosted glass blur, and custom cubic bezier transitions (`sakuraEase`).
+| Theme | Aesthetic Inspiration | Dominant Palette | Workspace Style | Launcher Icon |
+|---|---|---|---|:---:|
+| [**Sakurazuki**](file:///home/michal/Projects/Omarchy/Sakurazuki/README.md) | Japanese Cherry Blossom Moonlight | `#14111A` Plum & `#FFB7C5` Sakura Pink | Traditional Kanji (`一 二 三 四 五 六`) | `🌸` |
+| [**Night Owl**](file:///home/michal/Projects/Omarchy/Night-Owl/README.md) | Sarah Drasner's Night Owl IDE Theme | `#011627` Midnight Navy & `#7FDBCA` Teal | Zero-Padded Arabic (`01 02 03 ... 10`) | `🦉` |
 
 ---
 
 ## ⚡ Quick Start
 
-### 1. Clone the Repository
+### 1. Install Night Owl
 ```bash
-git clone https://github.com/Michal-Nithesh/Sakurazuki.git
-cd Sakurazuki
-```
-
-### 2. Run the Safe Installer
-The installer creates automatic timestamped backups of any pre-existing configuration before deploying:
-```bash
+cd ~/Projects/Omarchy/Night-Owl
 ./install.sh
 ```
 
-To test before installing:
+### 2. Install Sakurazuki
 ```bash
-./install.sh --dry-run
+cd ~/Projects/Omarchy/Sakurazuki
+./install.sh
 ```
 
-### 3. Uninstallation
-To revert your configuration back to its original state:
+### 3. Switch Themes On-The-Fly
+Switch reversibly with a single command without logging out:
 ```bash
-./uninstall.sh
+# Switch to Night Owl (01-10 numbering, navy & teal focus)
+omarchy theme set night-owl
+
+# Switch to Sakurazuki (Kanji numbering, blossom pink focus)
+omarchy theme set sakurazuki
+```
+*Or use the interactive selector: `omarchy-theme-switch`*
+
+---
+
+## 📁 Repository Structure
+
+```
+Omarchy/
+├── Sakurazuki/                 # Sakurazuki Desktop Distribution
+│   ├── README.md               # Theme details and features
+│   ├── install.sh              # Independent installer
+│   ├── uninstall.sh            # Independent uninstaller
+│   ├── bin/                    # Screensaver & utility scripts
+│   ├── assets/                 # Wallpapers, avatars, custom icon pack
+│   ├── config/                 # Hyprland, Ghostty, and Quickshell plugins
+│   ├── docs/                   # Audits, inventory, and customization notes
+│   └── screenshots/            # Showcase desktop captures
+│
+├── Night-Owl/                  # Night Owl Desktop Distribution
+│   ├── README.md               # Theme details and palette notes
+│   ├── install.sh              # Independent installer
+│   ├── uninstall.sh            # Independent uninstaller
+│   ├── bin/                    # Theme switching utilities
+│   ├── assets/                 # Wallpapers and preview composition
+│   ├── config/                 # Hyprland, Ghostty, and nightowl.workspaces plugin
+│   ├── docs/                   # Implementation specs and color tokens
+│   └── screenshots/            # High-resolution theme previews
+│
+├── docs/                       # Architectural & Comparative Documentation
+│   ├── architecture.md         # System design and sub-project isolation
+│   ├── installation.md         # Unified setup, CLI flags, and switching
+│   ├── theme-comparison.md     # Side-by-side feature and color matrix
+│   └── migration.md            # Upgrading from legacy single-theme repo
+│
+├── README.md                   # Top-level collection guide
+├── LICENSE                     # MIT License
+└── .gitignore                  # Git repository ignore patterns
 ```
 
 ---
 
-## ⌨️ Useful Keybindings
+## 🎨 Theme Highlights
 
-| Keybinding | Action |
-|---|---|
-| `SUPER + RETURN` | Open Ghostty terminal |
-| `SUPER + B` | Launch default web browser |
-| `SUPER + SHIFT + F` | Open Nautilus file manager |
-| `SUPER + C` | Launch Visual Studio Code / Editor |
-| `SUPER + Q` | Close active window |
-| `SUPER + TAB` | Switch windows (Mission Control style) |
-| `SUPER + 1..6` | Switch to workspace 1 through 6 |
-| `SUPER + SHIFT + 1..6`| Move active window to workspace 1 through 6 |
+### 🌸 Sakurazuki
+- **Ethereal Moonlight Ambiance**: Dark amethyst/plum backdrop (`#14111A`) illuminated by cherry blossom pink (`#FFB7C5`) and rose highlights (`#E06B8B`).
+- **Kanji Workspaces**: Native Quickshell status bar displaying Japanese Kanji numerals (`一 二 三 四 五 六`).
+- **Island Architecture**: Dedicated Quickshell plugins including `michal.bar`, `michal.center-island`, `michal.system-island`, `michal.lock`, and `michal.menu`.
+- **Ambient Screensaver**: Built-in CLI screensaver daemon launching full-screen terminal animations on idle.
+- **Custom Icon Pack**: Tailored folder and desktop icon suite themed to the Sakurazuki color spectrum.
 
----
-
-## 📚 Documentation Index
-
-- [Installation & Prerequisites Guide](docs/installation.md)
-- [Component Inventory & IPC Hooks](docs/component-inventory.md)
-- [Customization & Color Guide](docs/customization.md)
-- [Troubleshooting & FAQ](docs/troubleshooting.md)
-- [Complete Screenshot Gallery](docs/screenshots.md)
+### 🦉 Night Owl
+- **Sarah Drasner Visual Identity**: Faithfully adapted from the official Night Owl editor color system, tailored for a developer-focused, low-strain Linux desktop experience.
+- **Two-Digit Zero-Padded Workspaces**: Strict `01 02 03 04 05 06 07 08 09 10` sequence in both Waybar and the custom `nightowl.workspaces` Quickshell plugin.
+- **Developer Color Semantics**: Midnight navy (`#011627`), mint teal accents (`#7FDBCA`), and indigo functions (`#82AAFF`) with coral alerts (`#FF6363`).
+- **Comprehensive Application Theming**: Turnkey configurations for Hyprland, Waybar, Ghostty, Foot, Kitty, Alacritty, GTK 3/4, Mako, SwayOSD, Neovim, VSCode, Btop, Walker, Wofi, and Chromium.
+- **Dynamic Compositor Hooking**: Real-time border gradient and shell layout switching via Omarchy's `theme-set.d` hook engine.
 
 ---
 
-## 📄 License & Credits
+## 📖 Documentation Index
 
-- **Desktop Author & Customization:** Michal Nithesh
-- **Theme Name:** Sakurazuki 桜月
-- **Base System:** [Omarchy Linux](https://omarchy.org/) by Basecamp
-- **Compositor:** [Hyprland](https://hyprland.org/) by Vaxry
-- **Shell Engine:** [Quickshell](https://quickshell.outfoxxed.me/) by Outfoxxed
-- **License:** [MIT License](LICENSE)
+- [Architecture & Design](file:///home/michal/Projects/Omarchy/docs/architecture.md)
+- [Installation & Switching Guide](file:///home/michal/Projects/Omarchy/docs/installation.md)
+- [Side-by-Side Theme Comparison](file:///home/michal/Projects/Omarchy/docs/theme-comparison.md)
+- [Migration Guide](file:///home/michal/Projects/Omarchy/docs/migration.md)
+- [Sakurazuki Component Inventory](file:///home/michal/Projects/Omarchy/Sakurazuki/docs/component-inventory.md)
+- [Night Owl Implementation Specification](file:///home/michal/Projects/Omarchy/Night-Owl/docs/NIGHT_OWL_IMPLEMENTATION.md)
+- [Night Owl Palette Definition](file:///home/michal/Projects/Omarchy/Night-Owl/docs/NIGHT_OWL_PALETTE.md)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License — see the [LICENSE](file:///home/michal/Projects/Omarchy/LICENSE) file for details.

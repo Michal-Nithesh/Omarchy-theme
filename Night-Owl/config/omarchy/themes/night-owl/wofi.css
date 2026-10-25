@@ -1,0 +1,47 @@
+@define-color bg #011627;
+@define-color fg #D6DEEB;
+@define-color surface #0B253A;
+@define-color border #1D3B53;
+@define-color accent #7FDBCA;
+@define-color accent_fg #011627;
+@define-color blue #82AAFF;
+@define-color muted #637777;
+
+window {
+    background-color: @bg;
+    border: 2px solid @accent;
+    border-radius: 12px;
+    font-family: 'JetBrainsMono Nerd Font', 'Inter', sans-serif;
+}
+
+input {
+    background-color: @surface;
+    color: @fg;
+    border: 1px solid @border;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 10px;
+}
+
+input:focus {
+    border: 1px solid @accent;
+}
+
+#inner-box {
+    margin: 8px;
+}
+
+#entry {
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+#entry:selected {
+    background-color: @accent;
+    color: @accent_fg;
+}
+
+#entry:selected #text {
+    color: @accent_fg;
+    font-weight: bold;
+}

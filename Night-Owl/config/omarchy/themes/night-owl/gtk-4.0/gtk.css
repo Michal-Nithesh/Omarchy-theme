@@ -1,0 +1,46 @@
+@define-color background #011627;
+@define-color foreground #D6DEEB;
+@define-color theme_selected_bg_color #7FDBCA;
+@define-color theme_selected_fg_color #011627;
+
+window {
+    background-color: @background;
+    color: @foreground;
+}
+
+menu,
+.popup,
+.context-menu {
+    background-color: #0B253A;
+    color: @foreground;
+    border: 1px solid rgba(29, 59, 83, 0.8);
+}
+
+menuitem {
+    background-color: transparent;
+    color: @foreground;
+}
+
+menuitem:hover,
+menuitem:focus {
+    background-color: #7FDBCA;
+    color: #011627;
+}
+
+menuitem:selected {
+    background-color: #7FDBCA;
+    color: #011627;
+}
+
+GtkSelection {
+    background-color: #1D3B53;
+    color: #D6DEEB;
+}
+
+.view:selected,
+.view:selected:focus,
+textview text selection:focus,
+textview text selection {
+    background-color: #1D3B53;
+    color: #D6DEEB;
+}

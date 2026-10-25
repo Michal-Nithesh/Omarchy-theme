@@ -1,0 +1,35 @@
+mode = "dark"
+
+accent = "#7FDBCA"
+selection = "#1D3B53"
+muted = "#637777"
+
+background = "#011627"
+dark_background = "#01111E"
+darker_background = "#010E1A"
+lighter_background = "#0B253A"
+
+foreground = "#D6DEEB"
+dark_foreground = "#80A4C2"
+light_foreground = "#E2E8F0"
+bright_foreground = "#FFFFFF"
+
+# Semantic Night Owl syntax & accent colors
+red = "#FF6363"
+yellow = "#ECC48D"
+orange = "#F78C6C"
+green = "#ADDB67"
+cyan = "#7FDBCA"
+blue = "#82AAFF"
+magenta = "#C792EA"
+brown = "#946B54"
+
+bright_red = "#FF2C83"
+bright_yellow = "#FFD580"
+bright_green = "#C5E478"
+bright_cyan = "#9CE7DB"
+bright_blue = "#A1BEFF"
+bright_magenta = "#D8A8F8"
+
+hyprland_active_border = "rgba(7FDBCAee) rgba(82AAFFee) 45deg"
+hyprland_inactive_border = "rgba(29, 59, 83, 0.70)"

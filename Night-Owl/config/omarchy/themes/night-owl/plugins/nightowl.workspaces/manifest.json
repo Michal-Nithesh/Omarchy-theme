@@ -1,0 +1,9 @@
+{
+  "id": "nightowl.workspaces",
+  "name": "Night Owl Workspaces",
+  "version": "1.0.0",
+  "description": "Zero-padded workspaces (01..10) with Night Owl teal highlight and owl menu launcher",
+  "author": "Antigravity",
+  "entry": "Workspaces.qml",
+  "slot": "bar"
+}
