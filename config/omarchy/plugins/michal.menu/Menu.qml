@@ -19,7 +19,6 @@ Item {
   property string pendingInitialMenu: "root"
 
   function open(payloadJson) {
-    console.log("[Menu] open called: payloadJson=" + payloadJson)
     var payload = ({})
     try { payload = JSON.parse(payloadJson || "{}") } catch (e) { payload = ({}) }
 
@@ -181,12 +180,22 @@ Item {
   }
 
   // Dimensions
-  property int cardWidth: root.dmenuActive ? Math.min(Math.max(500, Style.space(root.dmenuWidth)), panel.width - Style.gapsOut * 2) : Math.min(Style.space(840), panel.width - Style.gapsOut * 2)
-  property int cardHeight: root.dmenuActive
-    ? Math.min(130 + visibleRowsHeight, panel.height - Style.gapsOut * 2)
-    : Math.min(Style.space(560), panel.height - Style.gapsOut * 2)
+  property int cardWidth: {
+    var maxW = panel && panel.width > 0 ? panel.width - Style.gapsOut * 2 : 1200
+    if (root.dmenuActive) {
+      return Math.min(Math.max(500, Style.space(root.dmenuWidth)), maxW)
+    }
+    return Math.min(Style.space(840), maxW)
+  }
+  property int cardHeight: {
+    var maxH = panel && panel.height > 0 ? panel.height - Style.gapsOut * 2 : 800
+    if (root.dmenuActive) {
+      return Math.min(130 + visibleRowsHeight, maxH)
+    }
+    return Math.min(Style.space(560), maxH)
+  }
   property int layoutSerial: 0
-  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, false)
+  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(displayModel.count) : 0
 
   function evaluateMath(expr) {
     var raw = String(expr || "").trim()
@@ -254,11 +263,11 @@ Item {
     return root.cardHeight - 64 - 36 - 40
   }
 
-  function dmenuRowListHeight(_serial, _count, _filter) {
+  function dmenuRowListHeight(count) {
     if (root.mode === "input") return 0
-    var count = displayModel.count
-    if (count === 0) return 60
-    var rowsH = Math.min(count * 52, Style.space(380))
+    var c = (typeof count === "number") ? count : displayModel.count
+    if (c === 0) return 60
+    var rowsH = Math.min(c * 52, Style.space(380))
     return Math.max(52, rowsH)
   }
 
