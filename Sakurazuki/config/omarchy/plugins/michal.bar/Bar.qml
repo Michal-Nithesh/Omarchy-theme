@@ -1242,7 +1242,8 @@ Item {
     // reveal has to rebuild them — new surface, re-shaped glyphs, re-uploaded
     // textures — which measures ~150ms against ~20ms to tear down. Parking
     // keeps the surface alive, so showing is only a margin change.
-    visible: !remapGuard.remapping
+    visible: !root.barHidden && !remapGuard.remapping
+    opacity: root.barHidden ? 0.0 : 1.0
     exclusionMode: root.barHidden ? ExclusionMode.Ignore : ExclusionMode.Auto
 
     ScreenMoveRemap {

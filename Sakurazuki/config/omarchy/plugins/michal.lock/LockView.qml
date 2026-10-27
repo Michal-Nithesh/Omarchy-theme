@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Effects
+import Quickshell
 import qs.Commons
 import qs.Commons as Commons
 import qs.Ui
@@ -7,6 +8,7 @@ import qs.Ui
 Item {
   id: root
 
+  readonly property string home: Quickshell.env("HOME") || "/home/michal"
   property string backgroundPath: ""
   property int backgroundVersion: 0
   property bool fingerprintConfigured: false
@@ -89,7 +91,7 @@ Item {
     Image {
       id: wallpaper
       anchors.fill: parent
-      source: root.loadBackground ? (root.backgroundPath ? root.fileUrl(root.backgroundPath) : "file://" + Quickshell.env("HOME") + "/.config/omarchy/themes/sakurazuki/backgrounds/Sakurazuki Moonlit Valley Retreat.png") : ""
+      source: root.loadBackground ? (root.backgroundPath ? root.fileUrl(root.backgroundPath) : "file://" + root.home + "/.config/omarchy/themes/sakurazuki/backgrounds/Sakurazuki Moonlit Valley Retreat.png") : ""
       fillMode: Image.PreserveAspectCrop
       asynchronous: true
       cache: false
@@ -227,11 +229,16 @@ Item {
             id: avatarImg
             anchors.fill: parent
             anchors.margins: 2
-            source: "file://" + Quickshell.env("HOME") + "/.config/omarchy/assets/avatar_sakurazuki.png"
+            source: "file://" + root.home + "/.config/omarchy/assets/avatar_sakurazuki.png"
             fillMode: Image.PreserveAspectCrop
             smooth: true
             asynchronous: false
             cache: true
+            onStatusChanged: {
+              if (status === Image.Error) {
+                console.warn("[LockView] Failed to load avatar:", source)
+              }
+            }
           }
         }
 

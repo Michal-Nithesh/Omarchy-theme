@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# omarchy:summary=Run the Omarchy screensaver with Sakurazuki ambient backdrop
+# omarchy:summary=Run the Omarchy screensaver with theme-aware ambient backdrop
 
 STATE_DIR="$HOME/.local/state/omarchy"
 
@@ -22,7 +22,7 @@ exit_screensaver() {
     if [[ -n "$PREV_WS" ]]; then
       hyprctl eval 'hl.animation({ leaf = "workspaces", enabled = false })' >/dev/null 2>&1
       hyprctl dispatch "hl.dsp.focus({ workspace = \"$PREV_WS\" })" >/dev/null 2>&1 || hyprctl dispatch workspace "$PREV_WS" >/dev/null 2>&1 || true
-      hyprctl eval 'hl.animation({ leaf = "workspaces", enabled = true, speed = 3.2, bezier = "sakuraEase", style = "slide" })' >/dev/null 2>&1
+      hyprctl eval 'hl.animation({ leaf = "workspaces", enabled = true, speed = 3.2, style = "slide" })' >/dev/null 2>&1
     fi
   fi
 
@@ -33,6 +33,18 @@ exit_screensaver() {
     if [[ -n "$PREV_BG" && -f "$PREV_BG" ]]; then
       omarchy-shell -q background setInstant "$PREV_BG"
     fi
+  fi
+
+  # Restore bar for sakura theme if it was hidden during screensaver
+  CURRENT_THEME="sakurazuki"
+  if [[ -f "$STATE_DIR/current/theme.name" ]]; then
+    CURRENT_THEME=$(cat "$STATE_DIR/current/theme.name" 2>/dev/null)
+  fi
+
+  if [[ "$CURRENT_THEME" == "sakurazuki" || -f "$STATE_DIR/screensaver_hid_bar" ]]; then
+    rm -f "$STATE_DIR/screensaver_hid_bar"
+    rm -f "$STATE_DIR/toggles/bar-off"
+    omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
   fi
 
   # Kill animation and all screensaver instances
@@ -63,6 +75,37 @@ if [[ ! -f "$BRANDING_FILE" ]]; then
   BRANDING_FILE="/usr/share/omarchy/branding/screensaver.txt"
 fi
 
+CURRENT_THEME="sakurazuki"
+if [[ -f "$STATE_DIR/current/theme.name" ]]; then
+  CURRENT_THEME=$(cat "$STATE_DIR/current/theme.name" 2>/dev/null)
+fi
+
+# For sakura theme: Hide the bar during screensaver
+if [[ "$CURRENT_THEME" == "sakurazuki" ]]; then
+  pkill -x waybar-bin 2>/dev/null || true
+  pkill -x waybar 2>/dev/null || true
+  mkdir -p "$STATE_DIR/toggles"
+  touch "$STATE_DIR/toggles/bar-off"
+  touch "$STATE_DIR/screensaver_hid_bar"
+  omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
+fi
+
+if [[ "$CURRENT_THEME" == "night-owl" ]]; then
+  HIGHLIGHT_COL="7fdbca"
+  GRAD_1="7fdbca"
+  GRAD_2="82aaff"
+  GRAD_3="011627"
+  ACCENT_ALT="c792ea"
+  TEXT_ALT="d6deeb"
+else
+  HIGHLIGHT_COL="f0dceb"
+  GRAD_1="d9a6c4"
+  GRAD_2="a87692"
+  GRAD_3="443043"
+  ACCENT_ALT="c2aedf"
+  TEXT_ALT="f0dceb"
+fi
+
 EFFECTS=(
   beams binarypath blackhole bouncyballs bubbles burn colorshift crumble
   decrypt errorcorrect expand fireworks highlight laseretch matrix middleout
@@ -80,25 +123,25 @@ while true; do
         --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c \
         --no-eol --no-restore-cursor \
         matrix \
-        --highlight-color f0dceb \
-        --rain-color-gradient d9a6c4 a87692 443043 \
-        --final-gradient-stops d9a6c4 a87692 &
+        --highlight-color "$HIGHLIGHT_COL" \
+        --rain-color-gradient "$GRAD_1" "$GRAD_2" "$GRAD_3" \
+        --final-gradient-stops "$GRAD_1" "$GRAD_2" &
       ;;
     rain)
       ttfx -i "$BRANDING_FILE" \
         --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c \
         --no-eol --no-restore-cursor \
         rain \
-        --rain-colors d9a6c4 a87692 c2aedf f0dceb \
-        --final-gradient-stops d9a6c4 a87692 &
+        --rain-colors "$GRAD_1" "$GRAD_2" "$ACCENT_ALT" "$TEXT_ALT" \
+        --final-gradient-stops "$GRAD_1" "$GRAD_2" &
       ;;
     decrypt)
       ttfx -i "$BRANDING_FILE" \
         --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c \
         --no-eol --no-restore-cursor \
         decrypt \
-        --ciphertext-colors d9a6c4 a87692 c2aedf \
-        --final-gradient-stops d9a6c4 a87692 &
+        --ciphertext-colors "$GRAD_1" "$GRAD_2" "$ACCENT_ALT" \
+        --final-gradient-stops "$GRAD_1" "$GRAD_2" &
       ;;
     *)
       ttfx -i "$BRANDING_FILE" \
@@ -116,7 +159,7 @@ while true; do
       fi
     fi
 
-    # Check if window lost focus
+    # Exit if window lost focus
     if ! screensaver_in_focus; then
       exit_screensaver
     fi
