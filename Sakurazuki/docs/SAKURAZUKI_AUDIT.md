@@ -30,8 +30,7 @@ Sakurazuki is a cohesive desktop aesthetic based on a Japanese cherry blossom mo
 │   │       ├── index.theme
 │   │       └── places/scalable/       # 40+ customized SVG folder icons with sakura tint
 │   └── wallpapers/
-│       ├── sakura.png                 # Main high-res sakura artwork (18MB)
-│       ├── Sakurazuki Moonlit Valley Retreat.png  # Mountain/valley landscape (2.2MB)
+│       ├── Sakurazuki Moonlit Valley Retreat.png  # Default mountain/valley landscape (2.2MB)
 │       └── Screensaver.png            # Dimmed backdrop for terminal screensaver (1.2MB)
 ├── bin/
 │   ├── omarchy-launch-screensaver     # Helper launcher with workspace 99 & wallpaper swap
@@ -134,7 +133,7 @@ Sakurazuki is a cohesive desktop aesthetic based on a Japanese cherry blossom mo
 | **Lock Screen** | Session authentication | `michal.lock` (Quickshell PAM locker with avatar framing and Japanese date/placeholder) and `hyprlock.conf` (Hyprlock standalone configuration). |
 | **Screensaver** | Idle animation | `omarchy-launch-screensaver` switches to workspace 99, displays `Screensaver.png`, and runs `ttfx` matrix/rain animations in sakura colors. |
 | **Icons & Cursors** | UI symbology | `Sakurazuki` icon theme (WhiteSur-dark base with pink-tinted folder SVGs) and `capitaine-cursors`. |
-| **Wallpaper** | Desktop backdrop | `Sakurazuki Moonlit Valley Retreat.png` and `sakura.png`. |
+| **Wallpaper** | Desktop backdrop | `Sakurazuki Moonlit Valley Retreat.png`. |
 
 ---
 
@@ -188,9 +187,8 @@ The following files constitute Sakurazuki's core identity and must not be overwr
 
 1. `assets/avatars/avatar_sakurazuki.png` & `luffy_square.png`
 2. `assets/icons/Sakurazuki/*` (entire directory and all 40+ SVGs)
-3. `assets/wallpapers/sakura.png`
-4. `assets/wallpapers/Sakurazuki Moonlit Valley Retreat.png`
-5. `assets/wallpapers/Screensaver.png`
+3. `assets/wallpapers/Sakurazuki Moonlit Valley Retreat.png`
+4. `assets/wallpapers/Screensaver.png`
 6. `config/omarchy/themes/sakurazuki/*` (all files in the Sakurazuki theme)
 7. `config/omarchy/plugins/michal.workspaces/*` (original Kanji workspaces plugin)
 8. `config/omarchy/plugins/michal.center-island/*`

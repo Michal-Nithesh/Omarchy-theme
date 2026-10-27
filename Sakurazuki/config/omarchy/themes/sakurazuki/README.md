@@ -8,7 +8,7 @@ Dark low-contrast Omarchy theme built around a sakura wallpaper.
 omarchy-theme-install https://github.com/ahmed-z0/omarchy-sakurazuki-theme.git
 ```
 
-- Wallpaper: `backgrounds/sakura.png`
+- Wallpaper: `backgrounds/Sakurazuki Moonlit Valley Retreat.png`
 - Palette: near-black plum base, muted rose accents, moonlit blue highlights
 
 ## Preview

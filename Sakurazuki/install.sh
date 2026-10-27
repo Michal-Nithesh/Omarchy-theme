@@ -197,7 +197,7 @@ mkdir -p "${HOME}/.local/share/icons"
 
 if [[ -d "${SCRIPT_DIR}/assets/wallpapers" ]]; then
   for wp in "${SCRIPT_DIR}/assets/wallpapers"/*; do
-    if [[ -f "$wp" ]]; then
+    if [[ -f "$wp" && "$(basename "$wp")" != "Screensaver.png" ]]; then
       copy_safe "$wp" "${HOME}/.config/omarchy/themes/sakurazuki/backgrounds/$(basename "$wp")"
     fi
   done
