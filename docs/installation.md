@@ -1,39 +1,39 @@
-# Installation and Switching Guide
+# Installation & Setup Guide
 
-This guide covers installing, configuring, switching, and uninstalling the **Sakurazuki** and **Night Owl** desktop environments from the Omarchy Theme Collection.
+This guide covers installing, configuring, and uninstalling the **Sakurazuki** desktop environment on **Omarchy Linux** and **Hyprland**.
 
 ---
 
 ## 1. System Requirements
 
-The Omarchy Theme Collection targets **Arch Linux** running **Omarchy Linux (v4.0.0+)** with Hyprland and Quickshell.
+Sakurazuki is designed for **Arch Linux** running **Omarchy Linux (v4.0.0+)** with Hyprland and Quickshell.
 
-### Required Software Packages:
+### Required Packages:
 - **Hyprland** (Wayland compositor)
-- **Quickshell** / `omarchy-shell` (Desktop widget system, status bar, and islands)
-- **Waybar** (Alternative or fallback status bar)
+- **Quickshell** / `omarchy-shell` (Desktop status bar, widgets, and floating islands)
 - **Ghostty** or **Foot** (Terminal emulators)
-- **Hyprlock** & **Hypridle** (Screen locking and idle management)
-- **Mako** or **SwayOSD** (Notifications and on-screen displays)
-- **Python 3** (Scripting, backend islands, and palette processing)
+- **Hyprlock** (Screen locking)
+- **Python 3** (Backend data provider for system island telemetry)
+- **Grim** & **Slurp** (Screen capture utilities)
+- **ttfx** (Optional, for terminal screensaver animations)
 
 ---
 
-## 2. Installing Night Owl
+## 2. Installation
 
-The Night Owl distribution is self-contained in `Night-Owl/`.
+The Sakurazuki distribution is self-contained within `Sakurazuki/`.
 
 ### 2.1. Inspect Installation (Dry Run)
-Before modifying your system, run a dry run to verify the planned actions:
+Before modifying your system, run a dry run to verify all planned file operations:
 ```bash
-cd ~/Projects/Omarchy/Night-Owl
+cd ~/Projects/Omarchy/Sakurazuki
 ./install.sh --dry-run
 ```
 
 ### 2.2. Perform Installation
-To install the theme, wallpapers, Quickshell workspace plugin, and switching hooks:
+To install the full theme (Quickshell plugins, wallpapers, custom icon pack, terminal configs, and screensaver scripts):
 ```bash
-cd ~/Projects/Omarchy/Night-Owl
+cd ~/Projects/Omarchy/Sakurazuki
 ./install.sh
 ```
 
@@ -41,112 +41,63 @@ cd ~/Projects/Omarchy/Night-Owl
 | Flag | Description |
 |---|---|
 | `-d`, `--dry-run` | Show simulated deployment operations without writing files to disk |
-| `-t`, `--theme-only` | Install only the theme files to `~/.config/omarchy/themes/night-owl` without modifying shell layouts |
-| `-n`, `--no-backup` | Skip creating backup copies of existing configuration files |
-| `-h`, `--help` | Display usage instructions and available options |
+| `--no-backup` | Skip creating backup copies of existing configuration files |
+| `-f`, `--force` | Overwrite existing configuration files without prompting |
+| `-h`, `--help` | Display usage instructions and options |
 
 ---
 
-## 3. Installing Sakurazuki
+## 3. Activation
 
-Sakurazuki is self-contained in `Sakurazuki/`.
-
-### 3.1. Inspect Installation (Dry Run)
+The installer automatically activates Sakurazuki upon completion. To re-apply or activate Sakurazuki manually at any time, run:
 ```bash
-cd ~/Projects/Omarchy/Sakurazuki
-./install.sh --dry-run
-```
-
-### 3.2. Perform Installation
-To install the full Japanese cherry blossom desktop (all Quickshell plugins, screensaver, wallpapers, and custom icon pack):
-```bash
-cd ~/Projects/Omarchy/Sakurazuki
-./install.sh
-```
-
-### 3.3. Installer Flags
-| Flag | Description |
-|---|---|
-| `-d`, `--dry-run` | Show simulated deployment operations without writing files to disk |
-| `-t`, `--theme-only` | Install only the `sakurazuki` theme directory |
-| `-n`, `--no-backup` | Skip configuration backups in `~/.config/omarchy/backups/` |
-| `-h`, `--help` | Display help options |
-
----
-
-## 4. Switching Between Themes
-
-Once both themes are installed, switching between them is completely seamless and reversible. You can switch themes using any of three methods:
-
-### Method A: Native Omarchy CLI (Recommended)
-Switch directly using the built-in Omarchy command:
-```bash
-# Switch to Night Owl (01-10 numerals, #011627 navy, #7FDBCA teal borders)
-omarchy theme set night-owl
-
-# Switch to Sakurazuki (一-六 Kanji, #14111A dark, #FFB7C5 sakura borders)
 omarchy theme set sakurazuki
 ```
 
-### Method B: Dedicated Switcher Binary
-The collection provides a helper binary installed to `~/.local/bin/omarchy-theme-switch`:
-```bash
-# Direct switch:
-omarchy-theme-switch night-owl
-omarchy-theme-switch sakurazuki
-
-# Interactive selector:
-omarchy-theme-switch
-```
-
-### Method C: Graphical Desktop Menu
-1. Press `Super` or click the launcher button (`🌸` or `🦉`) on the left of the top bar.
-2. Navigate to **Appearance** -> **Themes**.
-3. Select **Night Owl** or **Sakurazuki**.
-4. The desktop transitions instantly without requiring a logout or restart.
-
 ---
 
-## 5. Post-Installation Verification
+## 4. Uninstallation & Rollback
 
-To ensure your installation is operating without errors, run these validation commands:
-
-1. **Verify Hyprland Configuration**:
-   ```bash
-   hyprctl configerrors
-   ```
-   *(Expected output: empty, 0 errors)*
-
-2. **Verify Theme Token Parsing**:
-   ```bash
-   omarchy-theme-color --file ~/.config/omarchy/themes/night-owl/colors.toml --all
-   omarchy-theme-color --file ~/.config/omarchy/themes/sakurazuki/colors.toml --all
-   ```
-   *(Expected output: all 54 color tokens parsed successfully)*
-
-3. **Verify Quickshell Plugins**:
-   Check that both workspace plugins are registered:
-   ```bash
-   ls ~/.config/omarchy/plugins/nightowl.workspaces
-   ls ~/.config/omarchy/plugins/michal.workspaces
-   ```
-
----
-
-## 6. Uninstallation
-
-If you wish to remove either theme without affecting the other:
-
-### 6.1. Uninstall Night Owl
-```bash
-cd ~/Projects/Omarchy/Night-Owl
-./uninstall.sh
-```
-*Removes `~/.config/omarchy/themes/night-owl` and `~/.config/omarchy/plugins/nightowl.workspaces`.*
-
-### 6.2. Uninstall Sakurazuki
+To revert your desktop back to its original state and restore pre-install configuration backups:
 ```bash
 cd ~/Projects/Omarchy/Sakurazuki
-./uninstall.sh --yes
+./uninstall.sh
 ```
-*Restores the previous configuration from backup or removes Sakurazuki-specific assets.*
+
+### Uninstaller Options:
+| Option | Description |
+|---|---|
+| `-b`, `--backup <dir>` | Specify an explicit backup directory to restore |
+| `-y`, `--yes` | Skip the confirmation prompt |
+| `-h`, `--help` | Display help options |
+
+The uninstaller removes Sakurazuki's custom plugins (`michal.*`), screensaver scripts, wallpapers, icon pack, and theme directory, and cleanly restores the pre-install backup saved in `~/.config/omarchy/backups/`.
+
+---
+
+## 5. Verification & Troubleshooting
+
+### Check Active Plugins
+Verify that Sakurazuki's custom plugins are loaded in Quickshell:
+```bash
+omarchy-shell shell listPlugins | grep -E "michal\."
+```
+You should see:
+- `michal.bar`
+- `michal.center-island`
+- `michal.system-island`
+- `michal.workspaces`
+- `michal.menu`
+- `michal.lock`
+
+### Refresh the Desktop Shell
+If any widget needs a refresh:
+```bash
+omarchy restart shell
+```
+
+### Reload Hyprland
+To reload Hyprland window rules and appearance:
+```bash
+hyprctl reload
+```

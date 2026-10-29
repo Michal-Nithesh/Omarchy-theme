@@ -41,20 +41,11 @@ if [[ -f "$SCREENSAVER_BG" ]]; then
   omarchy-shell -q background setInstant "$SCREENSAVER_BG"
 fi
 
-CURRENT_THEME="sakurazuki"
-if [[ -f "$STATE_DIR/current/theme.name" ]]; then
-  CURRENT_THEME=$(cat "$STATE_DIR/current/theme.name" 2>/dev/null)
-fi
-
-# For sakura theme: Hide the bar during screensaver
-if [[ "$CURRENT_THEME" == "sakurazuki" ]]; then
-  pkill -x waybar-bin 2>/dev/null || true
-  pkill -x waybar 2>/dev/null || true
-  mkdir -p "$STATE_DIR/toggles"
-  touch "$STATE_DIR/toggles/bar-off"
-  touch "$STATE_DIR/screensaver_hid_bar"
-  omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
-fi
+# Hide the bar during screensaver
+mkdir -p "$STATE_DIR/toggles"
+touch "$STATE_DIR/toggles/bar-off"
+touch "$STATE_DIR/screensaver_hid_bar"
+omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
 
 # Focus empty workspace 99 with instantaneous transition (disable workspace animation only for this switch)
 hyprctl eval 'hl.animation({ leaf = "workspaces", enabled = false })' >/dev/null 2>&1

@@ -1,121 +1,100 @@
-# Omarchy Theme Collection Architecture
+# Sakurazuki Desktop Theme Architecture
 
-This document details the architectural design and structural separation of the **Omarchy Theme Collection** repository, housing both the **Sakurazuki** and **Night Owl** desktop environments.
+This document details the architectural design and system integration of the **Sakurazuki** desktop environment for **Omarchy Linux** and **Hyprland**.
 
 ---
 
 ## 1. Architectural Philosophy
 
-The Omarchy theme collection is designed according to three fundamental principles:
+The Sakurazuki desktop theme is designed according to three fundamental principles:
 
-1. **Complete Autonomy**: Each child sub-project (`Sakurazuki/` and `Night-Owl/`) is a fully functional, self-contained distribution containing its own configuration files, assets, plugins, installer, uninstaller, and documentation.
-2. **Zero Intersite Pollution**: Neither theme depends on files located in the sibling theme's directory. Installing or uninstalling one theme does not alter or break the assets or configurations of the other.
-3. **Seamless Coexistence**: Both themes install side-by-side into the Omarchy Linux desktop ecosystem (`~/.config/omarchy/themes/`, `~/.config/omarchy/plugins/`), and users can switch dynamically between them without configuration conflicts or manual intervention.
+1. **Self-Contained Autonomy**: The theme is completely modular and self-contained within `Sakurazuki/`, containing its own configuration files, custom Quickshell plugins, assets, utilities, installer, and uninstaller.
+2. **Native Omarchy Integration**: Sakurazuki leverages Omarchy's first-party extension and plugin framework (`~/.config/omarchy/plugins/`, `~/.config/omarchy/themes/sakurazuki/`) and Hyprland configuration overrides (`~/.config/hypr/`).
+3. **Safe Deployment & Clean Rollback**: The installation scripts check for existing configurations and create timestamped backups in `~/.config/omarchy/backups/` before deploying. The uninstaller removes only Sakurazuki-managed files and restores previous backups.
 
 ---
 
 ## 2. Directory Hierarchy
 
 ```
-Omarchy/                                 <-- Parent Collection Root
-├── README.md                            <-- Top-level showcase and quickstart
+Omarchy-theme/
+├── README.md                            <-- Repository showcase & quick start
 ├── LICENSE                              <-- MIT License
 ├── .gitignore                           <-- Git repository ignore patterns
 │
-├── docs/                                <-- Collection-wide Architecture & Specs
+├── docs/                                <-- Architectural and installation documentation
 │   ├── architecture.md                  <-- System design & integration (this file)
-│   ├── installation.md                  <-- Unified installation & switching guide
-│   ├── theme-comparison.md              <-- Deep side-by-side feature matrix
-│   └── migration.md                     <-- Migration from legacy single-theme repo
+│   └── installation.md                  <-- Setup, deployment & uninstallation guide
 │
-├── Sakurazuki/                          <-- Sakurazuki Desktop Distribution
-│   ├── README.md                        <-- Sakurazuki documentation & features
-│   ├── install.sh                       <-- Autonomous installer
-│   ├── uninstall.sh                     <-- Autonomous uninstaller
-│   ├── bin/                             <-- Executables (screensaver, switcher)
-│   ├── assets/                          <-- Wallpapers, icons, avatars
-│   ├── config/                          <-- Configurations (Ghostty, Hypr, Omarchy)
-│   │   ├── ghostty/
-│   │   ├── hypr/
-│   │   └── omarchy/
-│   │       ├── branding/
-│   │       ├── extensions/
-│   │       ├── foot/
-│   │       ├── plugins/                 <-- michal.* Quickshell plugins
-│   │       ├── shell.json               <-- Sakurazuki shell layout definition
-│   │       └── themes/sakurazuki/       <-- Theme tokens & application templates
-│   ├── docs/                            <-- Sakurazuki component docs & audits
-│   └── screenshots/                     <-- Desktop captures
-│
-└── Night-Owl/                           <-- Night Owl Desktop Distribution
-    ├── README.md                        <-- Night Owl documentation & features
-    ├── install.sh                       <-- Autonomous installer
-    ├── uninstall.sh                     <-- Autonomous uninstaller
-    ├── bin/                             <-- Executables (switcher binary)
-    ├── assets/                          <-- Generated SVG/PNG wallpapers & preview
-    ├── config/                          <-- Configurations (Ghostty, Hypr, Omarchy)
-    │   ├── ghostty/
-    │   ├── hypr/
-    │   └── omarchy/
-    │       ├── branding/
-    │       ├── extensions/
-    │       ├── plugins/                 <-- nightowl.workspaces plugin
-    │       ├── shell.json               <-- Night Owl shell layout definition
-    │       └── themes/night-owl/        <-- Theme tokens & application templates
-    ├── docs/                            <-- Night Owl palette & implementation docs
-    └── screenshots/                     <-- Desktop captures & visual preview
+└── Sakurazuki/                          <-- Sakurazuki Desktop Distribution
+    ├── README.md                        <-- Detailed theme showcase & features
+    ├── install.sh                       <-- Autonomous installer with backup support
+    ├── uninstall.sh                     <-- Autonomous uninstaller with rollback
+    ├── bin/                             <-- Screensaver & wake utility scripts
+    │   ├── omarchy-launch-screensaver   <-- Screensaver workspace & overlay launcher
+    │   ├── omarchy-screensaver          <-- Ambient terminal animation runner
+    │   └── omarchy-system-wake          <-- Screen wake & bar recovery handler
+    ├── assets/                          <-- Theme assets
+    │   ├── avatars/                     <-- User profile avatars
+    │   ├── icons/                       <-- Custom Sakurazuki SVG folder icon pack
+    │   └── wallpapers/                  <-- High-resolution theme wallpapers
+    ├── config/                          <-- Turnkey application and desktop configurations
+    │   ├── ghostty/                     <-- Ghostty terminal styling
+    │   ├── hypr/                        <-- Hyprland look & feel, bindings, rules
+    │   └── omarchy/                     <-- Quickshell plugins, shell.json, theme tokens
+    │       ├── branding/                <-- Menu branding and about metadata
+    │       ├── extensions/              <-- Menu extensions (omarchy-menu.jsonc)
+    │       ├── foot/                    <-- Foot screensaver terminal configuration
+    │       ├── plugins/                 <-- michal.* Quickshell plugins
+    │       │   ├── michal.bar/          <-- Main status bar
+    │       │   ├── michal.center-island <-- Center clock, weather & controls
+    │       │   ├── michal.lock/         <-- Lock screen
+    │       │   ├── michal.menu/         <-- 10-category application launcher
+    │       │   ├── michal.system-island <-- Hardware monitors & status island
+    │       │   └── michal.workspaces/   <-- Kanji numerals (一 二 三 四 五 六)
+    │       ├── shell.json               <-- Shell layout and widget definitions
+    │       └── themes/sakurazuki/       <-- Theme palette & app config templates
+    ├── docs/                            <-- Inventory, customization & troubleshooting
+    └── screenshots/                     <-- Desktop captures & visual documentation
 ```
 
 ---
 
-## 3. Component Breakdown & Boundaries
+## 3. Component Breakdown
 
-### 3.1. Sub-Project Independence
-- **Sakurazuki** (`Sakurazuki/`):
-  - Retains all original Japanese cherry blossom aesthetic configurations.
-  - Deploys custom Quickshell plugins: `michal.bar`, `michal.center-island`, `michal.lock`, `michal.menu`, `michal.system-island`, and `michal.workspaces`.
-  - Maintains `🌸 Sakurazuki` branding in menu headers and about pages.
-  - Deploys Japanese Kanji numerals `一 二 三 四 五 六` for workspace visualization.
-  - Deploys the ambient foot screensaver scripts (`omarchy-screensaver`, `omarchy-launch-screensaver`).
+### 3.1. Desktop Interface & Quickshell Plugins
+Sakurazuki implements its top bar and interactive islands using **Quickshell** (QML):
+- **`michal.bar`**: The primary floating top bar hosting status widgets, tray, and island anchors.
+- **`michal.workspaces`**: Traditional Japanese Kanji numerals (`一 二 三 四 五 六`) for workspace representation, with smooth active indicator states.
+- **`michal.center-island`**: Floating center island housing the digital clock, calendar, weather widget, and quick utility controls.
+- **`michal.system-island`**: Dedicated system telemetry island tracking CPU, memory, network, audio, and battery state.
+- **`michal.menu`**: Custom 10-category application and system controls launcher.
+- **`michal.lock`**: High-contrast lock screen with ambient background blur and clean credential input.
 
-- **Night Owl** (`Night-Owl/`):
-  - Implements the complete Sarah Drasner Night Owl color system (`#011627` navy background, `#7FDBCA` teal accents, `#82AAFF` blue functions).
-  - Deploys a dedicated Quickshell workspace plugin: `nightowl.workspaces` with strict zero-padded Arabic numerals (`01` through `10`).
-  - Maintains `🦉 Night Owl` branding in menu extensions and system banners.
-  - Deploys vector-generated SVG/PNG wallpapers (`night-owl.png`, `night-owl-minimal.png`).
-  - Deploys application styling across 18 desktop components (Hyprland, Waybar, Ghostty, Foot, Kitty, Alacritty, GTK 3/4, Mako, SwayOSD, VSCode, Neovim, Btop, Walker, Wofi, Chromium).
+### 3.2. Window Management (Hyprland)
+- **Look & Feel**: Defined in `looknfeel.conf` and `looknfeel.lua`.
+  - Active borders: Sakura rose to blossom pink gradient (`rgba(a87692ee) rgba(d9a6c4ee) 45deg`).
+  - Inactive borders: Frosted plum container borders (`rgba(443043aa)`).
+  - Rounding: `14px` border radius with customized ambient shadows.
+- **Bindings**: Quick application hotkeys in `bindings.conf` (browser, terminal, editor, Mission Control window switcher).
 
----
+### 3.3. Ambient Screensaver
+- **`omarchy-launch-screensaver`**: Moves to an empty dedicated workspace with instantaneous transitions, hides the status bar, and spawns the screensaver window.
+- **`omarchy-screensaver`**: Runs terminal visual animations (`ttfx`) with the Sakurazuki color spectrum (`#D9A6C4`, `#A87692`, `#443043`, `#C2AEDF`) over `Screensaver.png`. Dismisses seamlessly on user input.
 
-## 4. Shared Integration & Dynamic Switching Engine
+### 3.4. Sleep & Wake Recovery
+- **`omarchy-system-wake`**: Ensures that upon resume from sleep or screen unlock, screensaver flags are cleaned up and the Quickshell status bar (`michal.bar`) is synced and visible immediately.
 
-To permit seamless switching without modifying the upstream Omarchy core packages, the collection leverages Omarchy's native hook architecture:
-
-### 4.1. The Hook Pipeline (`~/.config/omarchy/hooks/theme-set.d/`)
-When the user executes `omarchy theme set <theme-name>`, the core utility executes all scripts in `~/.config/omarchy/hooks/theme-set.d/`:
-
-1. **Theme Switching Hook** (`omarchy-theme-switch.sh`):
-   - Reads the new target theme name passed via argument `$1`.
-   - When switching to **`night-owl`**:
-     - Swaps `~/.config/omarchy/shell.json` to instantiate the `nightowl.workspaces` plugin.
-     - Updates Hyprland border gradients via `hyprctl keyword general:col.active_border "rgba(7fdbcaff) rgba(82aaffff) 45deg"`.
-     - Updates Hyprland inactive borders to `rgba(1d3b53cc)`.
-     - Reloads `omarchy-shell` to render the `01`..`10` two-digit workspace bar immediately.
-   - When switching to **`sakurazuki`**:
-     - Swaps `~/.config/omarchy/shell.json` to instantiate `michal.workspaces`.
-     - Updates Hyprland active borders to `rgba(ffb7c5ff) rgba(e06b8bff) 45deg`.
-     - Updates Hyprland inactive borders to `rgba(282233cc)`.
-     - Reloads `omarchy-shell` to render the `一`..`六` Kanji workspace bar immediately.
-
-### 4.2. Hyprland Look & Feel Dynamic Binding
-In Omarchy Linux, user-level overrides in `~/.config/hypr/looknfeel.lua` and `~/.config/hypr/looknfeel.conf` are evaluated by Hyprland. To ensure border colors never get stuck on a stale configuration:
-- The configuration reads `~/.local/state/omarchy/current/theme.name` dynamically.
-- Borders, shadows, and rounding automatically align with the active theme upon compositor reload or theme change.
+### 3.5. Application Theming
+The theme bundle in `config/omarchy/themes/sakurazuki/` provides styling across:
+- **Terminals**: Ghostty, Foot, Alacritty, Kitty
+- **Editors**: Neovim, VSCode
+- **System Tools**: Btop, Mako, SwayOSD, Walker, Wofi, Chromium, Vencord/Discord
 
 ---
 
-## 5. Security & Stability Guarantees
+## 4. Security & Stability Guarantees
 
-- **No Overwriting of Personal Shells**: The installation scripts check for existing configurations and create timestamped backups in `~/.config/omarchy/backups/` before installing.
-- **Dry-Run Safe**: Both sub-project installers provide a `--dry-run` flag so users can inspect every planned file copy before committing any changes to disk.
-- **Atomic Rollback**: If uninstalled, each sub-project's `uninstall.sh` removes only its registered theme files and plugins, leaving user documents, system libraries, and companion themes completely undisturbed.
+- **Pre-Install Backups**: The installer checks for existing configuration files and creates timestamped backups in `~/.config/omarchy/backups/sakurazuki_pre_install_<timestamp>` before making changes.
+- **Dry-Run Inspection**: The `./install.sh --dry-run` flag lets users inspect every planned file copy before committing any changes to disk.
+- **Clean Uninstallation**: Running `./uninstall.sh` removes Sakurazuki's custom plugins, scripts, and theme files, then restores the original pre-install configuration.

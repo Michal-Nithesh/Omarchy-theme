@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# ==============================================================================
+#  Omarchy System Wake - Screen, Backlight & Bar Recovery
+#  Ensures display, backlight, and status bar (Waybar / Quickshell bar)
+#  are properly restored when waking from sleep or turning on the screen.
+# ==============================================================================
+
+set -uo pipefail
+
+# 1. Run upstream omarchy-system-wake if available to turn on display and restore brightness
+if [[ -x /usr/share/omarchy/bin/omarchy-system-wake ]]; then
+  /usr/share/omarchy/bin/omarchy-system-wake "$@"
+else
+  omarchy-brightness-display on
+  omarchy-brightness-keyboard restore
+  omarchy-hyprland-monitor-clamshell >/dev/null 2>&1 || true
+fi
+
+STATE_DIR="$HOME/.local/state/omarchy"
+
+# 2. Reconcile any lingering screensaver states if screensaver was interrupted by sleep/lock
+rm -f "$STATE_DIR/screensaver_hid_bar"
+
+if [[ -f "$STATE_DIR/screensaver_prev_bg" ]]; then
+  PREV_BG=$(cat "$STATE_DIR/screensaver_prev_bg" 2>/dev/null || true)
+  rm -f "$STATE_DIR/screensaver_prev_bg"
+  if [[ -n "$PREV_BG" && -f "$PREV_BG" ]]; then
+    omarchy-shell -q background setInstant "$PREV_BG" 2>/dev/null || true
+  fi
+fi
+
+if [[ -f "$STATE_DIR/screensaver_prev_ws" ]]; then
+  PREV_WS=$(cat "$STATE_DIR/screensaver_prev_ws" 2>/dev/null || true)
+  rm -f "$STATE_DIR/screensaver_prev_ws"
+  if [[ -n "$PREV_WS" ]]; then
+    hyprctl dispatch workspace "$PREV_WS" >/dev/null 2>&1 || true
+  fi
+fi
+
+# 3. Ensure Quickshell bar is unhidden and synced
+rm -f "$STATE_DIR/toggles/bar-off"
+omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true

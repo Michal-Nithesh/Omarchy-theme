@@ -35,17 +35,10 @@ exit_screensaver() {
     fi
   fi
 
-  # Restore bar for sakura theme if it was hidden during screensaver
-  CURRENT_THEME="sakurazuki"
-  if [[ -f "$STATE_DIR/current/theme.name" ]]; then
-    CURRENT_THEME=$(cat "$STATE_DIR/current/theme.name" 2>/dev/null)
-  fi
-
-  if [[ "$CURRENT_THEME" == "sakurazuki" || -f "$STATE_DIR/screensaver_hid_bar" ]]; then
-    rm -f "$STATE_DIR/screensaver_hid_bar"
-    rm -f "$STATE_DIR/toggles/bar-off"
-    omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
-  fi
+  # Restore the status bar
+  rm -f "$STATE_DIR/screensaver_hid_bar"
+  rm -f "$STATE_DIR/toggles/bar-off"
+  omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
 
   # Kill animation and all screensaver instances
   pkill -x ttfx 2>/dev/null || true
@@ -75,36 +68,19 @@ if [[ ! -f "$BRANDING_FILE" ]]; then
   BRANDING_FILE="/usr/share/omarchy/branding/screensaver.txt"
 fi
 
-CURRENT_THEME="sakurazuki"
-if [[ -f "$STATE_DIR/current/theme.name" ]]; then
-  CURRENT_THEME=$(cat "$STATE_DIR/current/theme.name" 2>/dev/null)
-fi
+# Hide the bar during screensaver
+mkdir -p "$STATE_DIR/toggles"
+touch "$STATE_DIR/toggles/bar-off"
+touch "$STATE_DIR/screensaver_hid_bar"
+omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
 
-# For sakura theme: Hide the bar during screensaver
-if [[ "$CURRENT_THEME" == "sakurazuki" ]]; then
-  pkill -x waybar-bin 2>/dev/null || true
-  pkill -x waybar 2>/dev/null || true
-  mkdir -p "$STATE_DIR/toggles"
-  touch "$STATE_DIR/toggles/bar-off"
-  touch "$STATE_DIR/screensaver_hid_bar"
-  omarchy-shell -q omarchy.bar syncHidden 2>/dev/null || true
-fi
-
-if [[ "$CURRENT_THEME" == "night-owl" ]]; then
-  HIGHLIGHT_COL="7fdbca"
-  GRAD_1="7fdbca"
-  GRAD_2="82aaff"
-  GRAD_3="011627"
-  ACCENT_ALT="c792ea"
-  TEXT_ALT="d6deeb"
-else
-  HIGHLIGHT_COL="f0dceb"
-  GRAD_1="d9a6c4"
-  GRAD_2="a87692"
-  GRAD_3="443043"
-  ACCENT_ALT="c2aedf"
-  TEXT_ALT="f0dceb"
-fi
+# Sakurazuki ambient color spectrum
+HIGHLIGHT_COL="f0dceb"
+GRAD_1="d9a6c4"
+GRAD_2="a87692"
+GRAD_3="443043"
+ACCENT_ALT="c2aedf"
+TEXT_ALT="f0dceb"
 
 EFFECTS=(
   beams binarypath blackhole bouncyballs bubbles burn colorshift crumble

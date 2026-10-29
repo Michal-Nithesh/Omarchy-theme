@@ -192,9 +192,10 @@ rm -f "${HOME}/.config/omarchy/assets/Screensaver.png"
 rm -f "${HOME}/.config/omarchy/assets/avatar_sakurazuki.png"
 rm -f "${HOME}/.config/omarchy/assets/luffy_square.png"
 
-# Remove custom screensaver scripts in ~/.local/bin
+# Remove custom utility scripts in ~/.local/bin
 rm -f "${HOME}/.local/bin/omarchy-launch-screensaver"
 rm -f "${HOME}/.local/bin/omarchy-screensaver"
+rm -f "${HOME}/.local/bin/omarchy-system-wake"
 
 # Remove screensaver terminal styling
 rm -f "${HOME}/.config/omarchy/foot/screensaver.ini"

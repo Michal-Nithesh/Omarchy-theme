@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-This audit catalogs the pre-existing desktop customization named **Sakurazuki**, assesses its component architecture, scripts, assets, and theme-switching integrations, and establishes isolation boundaries to guarantee that Sakurazuki remains 100% functional and intact while introducing the new **Night Owl** theme.
+This audit catalogs the desktop customization named **Sakurazuki**, assesses its component architecture, scripts, assets, and desktop integrations, and establishes the architectural baseline to guarantee that Sakurazuki remains 100% functional, self-contained, and intact.
 
 Sakurazuki is a cohesive desktop aesthetic based on a Japanese cherry blossom motif, blending a midnight plum background (`#14111A`) with sakura rose borders (`#A87692`), blossom pink highlights (`#D9A6C4`), and moonlight lavender accents (`#C2AEDF`).
 
@@ -150,79 +150,65 @@ Omarchy (Quattro 4.0.6-1) provides a standardized theme lifecycle via `omarchy t
 
 ---
 
-## 5. Potential Conflicts & Compatibility Concerns
+## 5. Integration & Compatibility Architecture
 
-1. **Hyprland Look & Feel Overrides:**
-   - `~/.config/hypr/looknfeel.lua` and `looknfeel.conf` contain hardcoded Sakurazuki border colors (`rgba(a87692ee)` and `rgba(d9a6c4ee)`).
-   - If left static, switching to Night Owl would leave the window borders pink/plum instead of teal/cyan.
-   - *Resolution:* Make `looknfeel.lua` and `looknfeel.conf` theme-aware so that when `theme.name` is `night-owl`, it applies Night Owl active borders (`#7FDBCA` / `#82AAFF`) and inactive borders (`#1D3B53`), while preserving the exact Sakurazuki borders when `theme.name` is `sakurazuki`.
+1. **Hyprland Look & Feel:**
+   - `~/.config/hypr/looknfeel.lua` and `looknfeel.conf` apply Sakurazuki border colors (`rgba(a87692ee)` and `rgba(d9a6c4ee)`), window rounding, and shadows.
 
 2. **Workspace Numbering & Widgets:**
-   - Sakurazuki's `michal.workspaces` hardcodes Kanji numbers (`一`, `二`, ...), a cherry blossom launcher (`🌸`), and plum colors.
-   - Night Owl strictly requires zero-padded Arabic numerals (`01`, `02`, ..., `10`), active highlight `#7FDBCA`, and an owl or neutral launcher.
-   - *Resolution:* 
-     - Provide a dedicated, standalone `nightowl.workspaces` plugin implementing zero-padded Arabic numerals (`01` through `10`), Night Owl states, and an owl launcher (`🦉`).
-     - Provide a dedicated `shell.json` configuration for Night Owl.
-     - Implement a seamless, automated theme-set hook script in `~/.config/omarchy/hooks/theme-set.d/` that switches the active workspaces widget and shell profile cleanly between Sakurazuki and Night Owl without breaking either theme.
-     - Also configure Waybar `config.jsonc` and `style.css` / `waybar.css` with zero-padded numerals `01` to `10`.
+   - Sakurazuki's `michal.workspaces` provides Kanji numbers (`一`, `二`, `三`, `四`, `五`, `六`), a cherry blossom launcher (`🌸`), and plum colors.
+   - Dedicated `shell.json` configuration configures the status bar and islands.
 
 3. **Icon Themes:**
    - Sakurazuki uses the custom `Sakurazuki` folder icon theme.
-   - Night Owl looks best with a dark navy/blue system icon set such as `Yaru-blue-dark` or `WhiteSur-dark`.
-   - *Resolution:* Night Owl specifies its own `icons.theme` file pointing to `Yaru-blue-dark` (or `WhiteSur-dark`), so `omarchy-theme-set-gnome` switches icon themes automatically without touching Sakurazuki's icon assets.
 
 4. **Terminal Configuration:**
-   - Ghostty, Foot, Alacritty, and Kitty all dynamically include `~/.local/state/omarchy/current/theme/<terminal-file>`.
-   - As long as Night Owl provides complete terminal theme configurations, terminal styling transitions automatically upon theme switch.
+   - Ghostty, Foot, Alacritty, and Kitty incorporate the cherry blossom plum palette.
 
 5. **Screensaver Scripts:**
-   - `omarchy-launch-screensaver` references `Screensaver.png` and `sakuraEase`.
-   - Night Owl can supply its own night-owl screensaver backdrop or allow the screensaver to adapt safely.
+   - `omarchy-launch-screensaver` and `omarchy-screensaver` provide an ambient screensaver using `Screensaver.png` and `sakuraEase` animations.
 
 ---
 
-## 6. List of Files That Must Remain Unchanged
+## 6. List of Files That Must Remain Intact
 
-The following files constitute Sakurazuki's core identity and must not be overwritten or modified:
+The following files constitute Sakurazuki's core identity and are preserved:
 
 1. `assets/avatars/avatar_sakurazuki.png` & `luffy_square.png`
-2. `assets/icons/Sakurazuki/*` (entire directory and all 40+ SVGs)
+2. `assets/icons/Sakurazuki/*` (entire directory and all SVGs)
 3. `assets/wallpapers/Sakurazuki Moonlit Valley Retreat.png`
 4. `assets/wallpapers/Screensaver.png`
-6. `config/omarchy/themes/sakurazuki/*` (all files in the Sakurazuki theme)
-7. `config/omarchy/plugins/michal.workspaces/*` (original Kanji workspaces plugin)
-8. `config/omarchy/plugins/michal.center-island/*`
-9. `config/omarchy/plugins/michal.system-island/*`
-10. `config/omarchy/plugins/michal.menu/*`
-11. `config/omarchy/plugins/michal.lock/*`
-12. `config/omarchy/plugins/michal.bar/*`
-13. `config/omarchy/extensions/omarchy-menu.jsonc`
-14. `config/omarchy/branding/about.txt`
-15. `config/omarchy/foot/screensaver.ini`
-16. `docs/component-inventory.md`
-17. `docs/customization.md`
-18. `docs/installation.md`
-19. `docs/screenshots.md`
-20. `docs/troubleshooting.md`
-21. `screenshots/*` (all original screenshots)
-22. `install.sh` & `uninstall.sh` (Sakurazuki standalone scripts)
-23. `README.md` & `LICENSE` (Sakurazuki repository root documents)
+5. `config/omarchy/themes/sakurazuki/*` (all files in the Sakurazuki theme)
+6. `config/omarchy/plugins/michal.workspaces/*` (Kanji workspaces plugin)
+7. `config/omarchy/plugins/michal.center-island/*`
+8. `config/omarchy/plugins/michal.system-island/*`
+9. `config/omarchy/plugins/michal.menu/*`
+10. `config/omarchy/plugins/michal.lock/*`
+11. `config/omarchy/plugins/michal.bar/*`
+12. `config/omarchy/extensions/omarchy-menu.jsonc`
+13. `config/omarchy/branding/about.txt`
+14. `config/omarchy/foot/screensaver.ini`
+15. `docs/component-inventory.md`
+16. `docs/customization.md`
+17. `docs/installation.md`
+18. `docs/screenshots.md`
+19. `docs/troubleshooting.md`
+20. `screenshots/*` (all desktop screenshots)
+21. `install.sh` & `uninstall.sh` (Sakurazuki standalone scripts)
+22. `README.md` & `LICENSE` (repository documents)
 
 ---
 
-## 7. Isolation Strategy for Night Owl
+## 7. Architecture & Self-Contained Guarantees
 
-To maintain complete independence between the two themes:
+To maintain complete self-containment:
 
 1. **Independent Theme Directory:**
-   - Repository location: `themes/night-owl/`
-   - Installed location: `~/.config/omarchy/themes/night-owl/`
-2. **Night Owl Dedicated Plugins:**
-   - Standalone `nightowl.workspaces` plugin implementing zero-padded Arabic numerals (`01` through `10`) with Night Owl interactive colors.
-3. **Theme-Aware Hyprland Look & Feel:**
-   - Make `looknfeel.conf` and `looknfeel.lua` query `theme.name` dynamically, guaranteeing that Sakurazuki retains its exact sakura gradient border and Night Owl receives its crisp teal/cyan/blue gradient border.
-4. **Automated Reversible Switching:**
-   - Integrate with `omarchy theme set <theme>` via an idempotent hook in `~/.config/omarchy/hooks/theme-set.d/omarchy-theme-switch.sh`.
-   - Provide a dedicated switching helper `bin/omarchy-theme-switch` (or `themes/night-owl/scripts/switch-theme.sh`).
-5. **No Regressions Guarantee:**
-   - Switching back to Sakurazuki restores every single visual and behavioral detail of Sakurazuki without manual intervention.
+   - Repository location: `config/omarchy/themes/sakurazuki/`
+   - Installed location: `~/.config/omarchy/themes/sakurazuki/`
+2. **Dedicated Quickshell Plugins:**
+   - Standalone `michal.*` plugins implementing the Sakurazuki status bar, islands, menu, lock screen, and Kanji workspaces.
+3. **Hyprland Look & Feel:**
+   - Provides smooth window curves, sakura border gradients, and customized shadows.
+4. **Reliable Screen Wake:**
+   - Screen wake handler restores status bar visibility and clears screensaver flags automatically on resume.
